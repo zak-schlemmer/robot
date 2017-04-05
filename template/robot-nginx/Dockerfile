@@ -10,7 +10,7 @@ RUN apt update && apt install -y \
   wget
 
 # conf cp
-COPY ./template/robot-nginx/template.nginx.conf /etc/nginx/nginx.conf
+COPY ./projects/robot-nginx/template.nginx.conf /etc/nginx/nginx.conf
 
 # root .bashrc
 RUN echo "PS1='\[\e[31m\]\u\[\e[m\]@\h:\w\$ '" >> /root/.bashrc

@@ -24,16 +24,13 @@ if [ "$existing_entries" -lt "1" ]; then
         # point osx to docker-machine
         sudo bash -c 'echo "" >> /etc/hosts'
         sudo bash -c 'echo "# current robot dev" >> /etc/hosts'
-        sudo bash -c 'echo "10.254.254.254 temp.template.robot" >> /etc/hosts'
 		sudo bash -c 'echo "10.254.254.254 mailhog.robot" >> /etc/hosts'
-		sudo bash -c 'echo "10.254.254.254 drupal7.robot" >> /etc/hosts'
+
 	else
 		# point linux to nginx
 		sudo bash -c 'echo "" >> /etc/hosts'
 		sudo bash -c 'echo "# current robot dev" >> /etc/hosts'
-		sudo bash -c 'echo "172.72.72.222 temp.template.robot" >> /etc/hosts'
 		sudo bash -c 'echo "172.72.72.222 mailhog.robot" >> /etc/hosts'
-		sudo bash -c 'echo "172.72.72.222 drupal7.robot" >> /etc/hosts'
+
 	fi
 fi
-
