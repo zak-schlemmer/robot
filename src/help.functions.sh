@@ -29,6 +29,7 @@ function usage
     echo "    sync       Transfer files between local machine and container."
     echo "" && echo ""
     echo "Commands Taking Project Arguments - (See \"Project Arguments\" Below):" && echo ""
+    echo "    create     Build a project from a template."
     echo "    build      This will build out the projects given as arguments."
     echo "    stop       This will stop containers for projects provided."
     echo "    start      This will start containers for projects provided."

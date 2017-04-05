@@ -17,9 +17,9 @@ function nginx_check
 {
     if [ "$(docker ps | grep -c nginx_1)" == 0 ]; then
         if [ "$(docker ps -a | grep -c nginx_1)" == 0 ]; then
-            docker-compose -p robot -f /etc/robot/template/robot-nginx/docker-compose.yml build
+            docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml build
         fi
-        docker-compose -p robot -f /etc/robot/template/robot-nginx/docker-compose.yml up -d
+        docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml up -d
     fi
 }
 
@@ -38,9 +38,19 @@ function available_projects
 if [ "$1" != "" ]; then
     case $1 in
 
+        # this will be used to create new projects from templates
+        create )
+
+            # run the create subscript as source
+            . /etc/robot/src/create.sh
+
+            ;;
+
+
+
         build )
             # check if the project exists
-            . /etc/robot/src/project.check.sh ${*:2}
+            #. /etc/robot/src/project.check.sh ${*:2}
 
 
             # make projects list
