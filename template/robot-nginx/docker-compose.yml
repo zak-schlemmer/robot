@@ -25,4 +25,4 @@ services:
       net:
         ipv4_address: 172.72.72.254
     extra_hosts:
-      - "mailhog.robot:172.72.72.253"
+      - 'mailhog.robot:172.72.72.253'

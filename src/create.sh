@@ -107,6 +107,19 @@ case $template_select_option in
         sed -i -e "s/333/${next_ip}/g" /etc/robot/projects/$project_name/docker-compose.yml
         apache2_next_ip=$((next_ip+1))
         sed -i -e "s/444/${apache2_next_ip}/g" /etc/robot/projects/$project_name/docker-compose.yml
+
+        # update nginx
+        sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-nginx/template.nginx.conf
+        cat /etc/robot/projects/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-nginx/template.nginx.conf
+        sed -i -e "s/template/${project_name}/g" /etc/robot/projects/robot-nginx/template.nginx.conf
+        sed -i -e "s/8080/${apache_port}/g" /etc/robot/projects/robot-nginx/template.nginx.conf
+        echo "      - '${project_name}.robot:172.72.72.${apache2_next_ip}'" >> /etc/robot/projects/robot-nginx/docker-compose.yml
+        docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml build
+        docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml up -d
+
+
+        # TO DO : update hosts???
+
     ;;
 
     ################

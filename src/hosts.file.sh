@@ -30,7 +30,7 @@ if [ "$existing_entries" -lt "1" ]; then
 		# point linux to nginx
 		sudo bash -c 'echo "" >> /etc/hosts'
 		sudo bash -c 'echo "# current robot dev" >> /etc/hosts'
-		sudo bash -c 'echo "172.72.72.222 mailhog.robot" >> /etc/hosts'
+		sudo bash -c 'echo "172.72.72.254 mailhog.robot" >> /etc/hosts'
 
 	fi
 fi
