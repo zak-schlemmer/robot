@@ -1,13 +1,13 @@
-#robot#
+# robot #
 ## docker-compose based local development ##
 
 -----------------
 
 This is just the begining.
 
-This was a organizational specific project I made that I've taken a knife to.
+This was a organizational specific project, that I've taken a knife to.
 
-I'm still working to sew back up.
+I'm still working to sew it back up.
 
 This readme is true to that, and doesn't have much use at the moment.
 
@@ -17,13 +17,11 @@ This readme is true to that, and doesn't have much use at the moment.
 
 * [docker-compose](https://docs.docker.com/compose/)
 
-There are other things for osx to user docker-sync now.
+There are additional requirements for using robot in osx.
 
-Robot will at least try to install most of them for you.
+The install and update will try to install/use homebrew.
 
-For most things it will install/use homebrew.
-
-If you do not want homebrew on your machine, you need:
+If you do not want homebrew on your machine, you will need:
 
 * unison
 * unison-fsmonitor
@@ -33,8 +31,7 @@ If you do not want homebrew on your machine, you need:
 ----------------
 
 ### Running ###
-**
-It doesn't matter where you run this from:**
+**It doesn't matter where you run this from:**
 ```
 #!bash
 git clone git@github.com:zak-schlemmer/robot.git robot
@@ -43,7 +40,8 @@ cd robot
 ```
 -----------------
 
-**Your site files will be located in:**
+**Your site files will be located in...**
+
 (once you have built that project out):
 ```
 ~/robot.dev
@@ -55,7 +53,9 @@ db = <project_name>
 user = <project_name>
 pw = robot
 ```
-db ports (allows for mysql GUI client connections on osx)
+**db ports**
+
+(allows for mysql GUI client connections on osx)
 ```
 TO DO
 ```
