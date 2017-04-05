@@ -43,19 +43,13 @@ if [ "$1" != "" ]; then
 
             # run the create subscript as source
             . /etc/robot/src/create.sh
-
             ;;
 
-
-
+        # this will build all arguments provided to it
         build )
-            # check if the project exists
-            #. /etc/robot/src/project.check.sh ${*:2}
-
 
             # make projects list
             available_projects
-
 
             # in case nginx is down
             if [ "$2 " == "all" ]; then
@@ -64,14 +58,13 @@ if [ "$1" != "" ]; then
                 # start with this, if doing everything
                 nginx_check
             fi
-            # MAILHOG
+            # MAILHOG / TO DO : figure out a better plan for this
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
                 . /etc/robot/src/dependancies.sh
                 nginx_check
                 docker-compose -p robot -f /etc/robot/projects/mailhog/docker-compose.yml build
                 docker-compose -p robot -f /etc/robot/projects/mailhog/docker-compose.yml up -d  | grep -vi warning
             fi
-
 
             # GOOD DYNAMIC PROJECT ACTION
             for project in "${project_list[@]}"
@@ -83,8 +76,6 @@ if [ "$1" != "" ]; then
                     . /etc/robot/projects/$project/$project.install.sh $project
                 fi
             done
-
-
             ;;
 
         hosts )

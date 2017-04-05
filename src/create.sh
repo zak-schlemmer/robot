@@ -91,23 +91,32 @@ case $template_select_option in
         done
         # find next available IP
         for ((i=2;i<=254;i++)); do
-            if [ `docker inspect $(docker ps -a -q) | grep IPv4Address | sed 's@"IPv4Address": "@@g' | tr -d '"' | grep -c "172.72.72.${i}"` == "0" ]; then
+            # this would only work if they were always build after being created
+            # if [ `docker inspect $(docker ps -a -q) | grep IPv4Address | sed 's@"IPv4Address": "@@g' | tr -d '"' | grep -c "172.72.72.${i}"` == "0" ]; then
+            if [ `grep -rh "ipv4_address: 172.72.72" /etc/robot/projects/*/docker-compose.yml | sed  's/        ipv4_address: //' | grep -c "172.72.72.${i}"` == "0" ]; then
                 next_ip=$i
                 break
             fi
         done
-        # apache port
+        # set apache port
         sed -i -e "s/8080/${apache_port}/g" /etc/robot/projects/$project_name/apache2/$project_name.apache2.ports.conf \
             /etc/robot/projects/$project_name/apache2/$project_name.apache2.vhost.conf
-        # mysql port
+        # set mysql port
         sed -i -e "s/9999/${mysql_port}/g" /etc/robot/projects/$project_name/mysql/default.my.cnf \
             /etc/robot/projects/$project_name/$project_name.install.sh \
             /etc/robot/projects/$project_name/docker-compose.yml
-        # ip
+        # set ip
         sed -i -e "s/333/${next_ip}/g" /etc/robot/projects/$project_name/docker-compose.yml
         apache2_next_ip=$((next_ip+1))
         sed -i -e "s/444/${apache2_next_ip}/g" /etc/robot/projects/$project_name/docker-compose.yml
-
+        # update local /etc/hosts
+        export project_name=$project_name
+        echo "I will update your local /etc/hosts file for you." && echo ""
+        if [ `uname -s` == "Darwin" ]; then
+            sudo -E bash -c 'echo "10.254.254.254 ${project_name}.robot" >> /etc/hosts'
+        else
+            sudo -E bash -c 'echo "172.72.72.254 ${project_name}.robot" >> /etc/hosts'
+        fi
         # update nginx
         sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-nginx/template.nginx.conf
         cat /etc/robot/projects/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-nginx/template.nginx.conf
@@ -116,10 +125,6 @@ case $template_select_option in
         echo "      - '${project_name}.robot:172.72.72.${apache2_next_ip}'" >> /etc/robot/projects/robot-nginx/docker-compose.yml
         docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml build
         docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml up -d
-
-
-        # TO DO : update hosts???
-
     ;;
 
     ################

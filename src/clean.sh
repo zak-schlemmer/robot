@@ -34,7 +34,7 @@ case $2 in
 
     # possibly a bad idea
     with-bleach )
-        rm -rf ~/robot.dev/*
+        sudo rm -rf ~/robot.dev/*
         docker rm -f $(docker ps -a -q)
         docker volume rm $(docker volume ls -q)
         docker rmi -f $(docker images -a -q)
