@@ -1,0 +1,49 @@
+[mysqld]
+skip-host-cache
+skip-name-resolve
+datadir = /var/lib/mysql
+transaction-isolation = READ-COMMITTED
+binlog_format = ROW
+
+key_buffer = 36M
+join_buffer_size = 10M
+read_buffer_size = 10M
+sort_buffer_size = 20M
+table_cache = 2048
+thread_cache_size = 500
+interactive_timeout = 120
+wait_timeout = 1200
+connect_timeout = 60
+max_allowed_packet = 64M
+tmp_table_size = 128M
+
+innodb-flush-log-at-trx-commit=2
+
+innodb_large_prefix=true
+innodb_file_format=barracuda
+innodb_file_per_table=true
+
+innodb_flush_method = O_DIRECT
+innodb_read_io_threads = 3
+innodb_spin_wait_delay = 24
+innodb_sync_spin_loops = 100
+innodb_write_io_threads = 3
+innodb_lock_wait_timeout = 25
+
+innodb_buffer_pool_size = 2048M
+
+
+
+read_rnd_buffer_size = 10M
+
+table_open_cache = 1000
+
+table_definition_cache = 1200
+
+
+# !!placeholder!!
+port = 9999
+
+
+!includedir /etc/mysql/conf.d/
+

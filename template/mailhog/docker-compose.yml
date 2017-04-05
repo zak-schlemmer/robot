@@ -1,0 +1,26 @@
+version: '2'
+
+# this builds the network
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.72.72.0/24
+        gateway: 172.72.72.1
+
+# just one
+services:
+
+  # just mailhog
+  mailhog:
+    hostname: mailhog
+    container_name: mailhog_1
+    image: mailhog
+    build:
+      context: /etc/robot/
+      dockerfile: "template/mailhog/Dockerfile"
+    restart: always
+    networks:
+      net:
+        ipv4_address: 172.72.72.250
