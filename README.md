@@ -33,7 +33,6 @@ If you do not want homebrew on your machine, you will need:
 ### Running ###
 **It doesn't matter where you run this from:**
 ```
-#!bash
 git clone git@github.com:zak-schlemmer/robot.git robot
 cd robot
 ./install.sh
@@ -87,7 +86,6 @@ e: admin@robot.robot
 **build out the projects:**
 
 ```
-#!bash
 robot build 
 ```
 
