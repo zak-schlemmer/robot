@@ -69,15 +69,22 @@ e: admin@robot.robot
 ----------------
 
 ### Site URL's ###
-
-* TO DO
+```
+< the name you give it>.robot
+```
 
 ----------------
 
+### Global Commands ####
+
+**create a project for use**
+```
+robot create
+```
+
 ### Project Arguments ###
 
-* TO DO
-* all <- (not recomended, as there are quite a few now)
+* < the name you give it >
 
 -----------------
 
@@ -86,6 +93,6 @@ e: admin@robot.robot
 **build out the projects:**
 
 ```
-robot build 
+robot build < my project name >
 ```
 
