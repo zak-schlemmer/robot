@@ -2,11 +2,11 @@ version: "2"
 options:
   verbose: false
 syncs:
-  sfdev-rsync:
-    src: '~/robot.dev/temp.template/'
-    dest: '/temp.template'
+  template-rsync:
+    src: '~/robot.dev/template/'
+    dest: '/template'
     sync_host_ip: 'localhost'
-    sync_host_port: 10870
+    sync_host_port: 10800
     sync_strategy: 'rsync'
     sync_userid: '1000'
     sync_prefer: 'default'

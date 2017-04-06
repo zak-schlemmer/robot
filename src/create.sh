@@ -33,7 +33,7 @@ case $template_select_option in
             echo "You already have an existing 'robot-nginx'." && echo ""
         else
             # just use exactly the template for now
-            cp -r /etc/robot/template/robot-nginx/ /etc/robot/projects/
+            cp -r /etc/robot/template/robot-nginx /etc/robot/projects/
             echo "robot-nginx project created." && echo ""
         fi
     ;;
@@ -62,19 +62,24 @@ case $template_select_option in
         echo -n "(You will want to keep it short and simple): "
         read project_name && echo ""
         # make all the things for the new project, using the name provided
-        mkdir /etc/robot/projects/$project_name
-        cp -r /etc/robot/template/drupal7/* /etc/robot/projects/$project_name/
-        cp -r /etc/robot/template/apache2 /etc/robot/projects/$project_name/
-        cp -r /etc/robot/template/mysql /etc/robot/projects/$project_name/
+        project_path=/etc/robot/projects/$project_name
+        mkdir $project_path
+        cp -rf /etc/robot/template/drupal7/ $project_path/
+        cp -rf /etc/robot/template/apache2 $project_path/
+        cp -rf /etc/robot/template/mysql $project_path/
+        cp -rf /etc/robot/template/docker-sync $project_path/
         # replace the word template in stuff
-        sed -i -e "s/template/${project_name}/g" /etc/robot/projects/$project_name/docker-compose.yml \
-            /etc/robot/projects/$project_name/apache2/Dockerfile \
-            /etc/robot/projects/$project_name/mysql/Dockerfile \
-            /etc/robot/projects/$project_name/apache2/template.apache2.vhost.conf
+        sed -i -e "s/template/${project_name}/g" \
+            $project_path/docker-compose.yml \
+            $project_path/apache2/Dockerfile \
+            $project_path/mysql/Dockerfile \
+            $project_path/apache2/template.apache2.vhost.conf \
+            $project_path/docker-sync/docker-compose.yml \
+            $project_path/osx-docker-compose.yml
         # project specific file names
-        mv /etc/robot/projects/$project_name/apache2/template.apache2.ports.conf /etc/robot/projects/$project_name/apache2/$project_name.apache2.ports.conf
-        mv /etc/robot/projects/$project_name/apache2/template.apache2.vhost.conf /etc/robot/projects/$project_name/apache2/$project_name.apache2.vhost.conf
-        mv /etc/robot/projects/$project_name/drupal7.install.sh /etc/robot/projects/$project_name/$project_name.install.sh
+        mv $project_path/apache2/template.apache2.ports.conf $project_path/apache2/$project_name.apache2.ports.conf
+        mv $project_path/apache2/template.apache2.vhost.conf $project_path/apache2/$project_name.apache2.vhost.conf
+        mv $project_path/drupal7.install.sh $project_path/$project_name.install.sh
         # find next available apache2 port
         for ((i=81;i<=181;i++)); do
             if [ `cat /etc/robot/projects/*/apache2/*.apache2.ports.conf | grep Listen | tr -d 'Listen ' | grep -c $i` == "0" ]; then
@@ -89,26 +94,34 @@ case $template_select_option in
                 break
             fi
         done
+        # find next available docker-sync port
+        for ((i=10801;i<=10901;i++)); do
+            if [ `cat /etc/robot/projects/*/docker-sync/docker-compose.yml | grep "sync_host_port" | tr -d 'sync_host_port: ' | grep -c $i` == "0" ]; then
+                docker_sync_port=$i
+                break
+            fi
+        done
         # find next available IP
         for ((i=2;i<=254;i++)); do
-            # this would only work if they were always build after being created
-            # if [ `docker inspect $(docker ps -a -q) | grep IPv4Address | sed 's@"IPv4Address": "@@g' | tr -d '"' | grep -c "172.72.72.${i}"` == "0" ]; then
             if [ `grep -rh "ipv4_address: 172.72.72" /etc/robot/projects/*/docker-compose.yml | sed  's/        ipv4_address: //' | grep -c "172.72.72.${i}"` == "0" ]; then
                 next_ip=$i
                 break
             fi
         done
         # set apache port
-        sed -i -e "s/8080/${apache_port}/g" /etc/robot/projects/$project_name/apache2/$project_name.apache2.ports.conf \
-            /etc/robot/projects/$project_name/apache2/$project_name.apache2.vhost.conf
+        sed -i -e "s/8080/${apache_port}/g" $project_path/apache2/$project_name.apache2.ports.conf \
+            $project_path/apache2/$project_name.apache2.vhost.conf
         # set mysql port
-        sed -i -e "s/9999/${mysql_port}/g" /etc/robot/projects/$project_name/mysql/default.my.cnf \
-            /etc/robot/projects/$project_name/$project_name.install.sh \
-            /etc/robot/projects/$project_name/docker-compose.yml
+        sed -i -e "s/9999/${mysql_port}/g" $project_path/mysql/default.my.cnf \
+            $project_path/$project_name.install.sh \
+            $project_path/docker-compose.yml \
+            $project_path/osx-docker-compose.yml
+        # set docker-sync port
+        sed -i -e "s/10800/${docker_sync_port}/g" $project_path/docker-sync/docker-compose.yml
         # set ip
-        sed -i -e "s/333/${next_ip}/g" /etc/robot/projects/$project_name/docker-compose.yml
+        sed -i -e "s/333/${next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
         apache2_next_ip=$((next_ip+1))
-        sed -i -e "s/444/${apache2_next_ip}/g" /etc/robot/projects/$project_name/docker-compose.yml
+        sed -i -e "s/444/${apache2_next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
         # update local /etc/hosts
         export project_name=$project_name
         echo "I will update your local /etc/hosts file for you." && echo ""
@@ -125,6 +138,9 @@ case $template_select_option in
         echo "      - '${project_name}.robot:172.72.72.${apache2_next_ip}'" >> /etc/robot/projects/robot-nginx/docker-compose.yml
         docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml build
         docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml up -d
+
+        # cleanup for poor work on OSX sed's
+        find $project_path/ -name "*-e" | xargs rm -rf
     ;;
 
     ################

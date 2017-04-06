@@ -8,6 +8,11 @@ networks:
       - subnet: 172.72.72.0/24
         gateway: 172.72.72.1
 
+# docker-sync volume
+volumes:
+  template-rsync:
+    external: true
+
 
 services:
 
@@ -41,7 +46,7 @@ services:
       dockerfile: "./projects/template/apache2/Dockerfile"
     restart: always
     volumes:
-      - ~/robot.dev/template:/template
+      - template-rsync:/template:rw
     links:
       - template-db
     command: apache2ctl -D FOREGROUND
