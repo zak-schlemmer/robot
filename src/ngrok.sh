@@ -22,4 +22,4 @@ docker exec -t nginx_1 bash -c 'sed -i -e "s/${project}\.robot\;/${project}\.rob
 docker exec -t ${project}_web_1 bash -c "/etc/init.d/apache2 reload"
 
 # reload nginx to get any needed changes
-docker exec -t nginx_1 bash -c "nginx -s reload"
+docker exec -t robot_nginx_1 bash -c "nginx -s reload"
