@@ -33,6 +33,7 @@ case $template_select_option in
             echo "You already have an existing 'robot-nginx'." && echo ""
         else
             # just use exactly the template for now
+            mkdir -p /etc/robot/projects
             cp -r /etc/robot/template/robot-nginx /etc/robot/projects/
             echo "robot-nginx project created." && echo ""
         fi
@@ -48,6 +49,7 @@ case $template_select_option in
             echo "You already have an existing 'mailhog'." && echo ""
         else
             # just use exactly the template for now
+            mkdir -p /etc/robot/projects
             cp -r /etc/robot/template/mailhog /etc/robot/projects/
             echo "mailhog project created." && echo ""
         fi
@@ -63,7 +65,7 @@ case $template_select_option in
         read project_name && echo ""
         # make all the things for the new project, using the name provided
         project_path=/etc/robot/projects/$project_name
-        mkdir $project_path
+        mkdir -p $project_path
         cp -rf /etc/robot/template/drupal7/* $project_path/
         cp -rf /etc/robot/template/apache2 $project_path/
         cp -rf /etc/robot/template/mysql $project_path/
