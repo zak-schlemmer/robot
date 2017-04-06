@@ -24,7 +24,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
 RUN mkdir /opt/go && export GOPATH=/opt/go && go get github.com/mailhog/mhsendmail
 
 # put the vhost in there
-COPY ./projects/template/apache2/template.apache2.vhost.conf /etc/apache2/sites-available/template.robot
+COPY ./projects/custom/template/apache2/template.apache2.vhost.conf /etc/apache2/sites-available/template.robot
 
 # symlink to sites-enabled
 RUN ln -s /etc/apache2/sites-available/template.robot /etc/apache2/sites-enabled/010-template.robot.conf
@@ -33,7 +33,7 @@ RUN ln -s /etc/apache2/sites-available/template.robot /etc/apache2/sites-enabled
 RUN rm /var/www/html/index.html
 
 # listen on port 81
-COPY ./projects/template/apache2/template.apache2.ports.conf /etc/apache2/ports.conf
+COPY ./projects/custom/template/apache2/template.apache2.ports.conf /etc/apache2/ports.conf
 
 # allow the vhost path
 RUN sed -i -e 's/Directory \/var\/www\//Directory \/template/g' /etc/apache2/apache2.conf
@@ -42,7 +42,7 @@ RUN sed -i -e 's/Directory \/var\/www\//Directory \/template/g' /etc/apache2/apa
 RUN sed -i -e 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php5/apache2/php.ini
 
 # add xdebug values to php.ini
-COPY ./projects/template/apache2/xdebug.php.ini /etc/php5/apache2/conf.d/20-xdebug.ini
+COPY ./projects/custom/template/apache2/xdebug.php.ini /etc/php5/apache2/conf.d/20-xdebug.ini
 
 # robot user things
 RUN useradd -u 1000 -s /bin/bash -m robot

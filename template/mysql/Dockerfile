@@ -2,10 +2,10 @@
 FROM mysql:5.5
 
 # better my.cnf
-COPY ./projects/template/mysql/default.my.cnf /etc/mysql/my.cnf
+COPY ./projects/custom/template/mysql/default.my.cnf /etc/mysql/my.cnf
 
 # add .my.cnf
-COPY ./projects/template/mysql/default.dot.my.cnf /root/.my.cnf
+COPY ./projects/custom/template/mysql/default.dot.my.cnf /root/.my.cnf
 
 # apt-get what we need
 RUN apt update && apt install -y \

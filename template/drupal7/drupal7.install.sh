@@ -20,18 +20,18 @@ git clone --branch 7.54 https://git.drupal.org/project/drupal.git ~/robot.dev/$1
 if [ "$OS" == "Darwin" ]; then
     # docker-sync
     echo "Getting docker-sync ready. Just a moment." && echo ""
-    docker-sync start -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 --daemon #> /dev/null 2>&1
-    docker-sync stop -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 #> /dev/null 2>&1
-    docker-sync clean -c /etc/robot/projects/$1/docker-sync/docker-compose.yml #> /dev/null 2>&1
-    docker-sync start -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 --daemon
+    docker-sync start -c /etc/robot/projects/custom/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 --daemon #> /dev/null 2>&1
+    docker-sync stop -c /etc/robot/projects/custom/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 #> /dev/null 2>&1
+    docker-sync clean -c /etc/robot/projects/custom/$1/docker-sync/docker-compose.yml #> /dev/null 2>&1
+    docker-sync start -c /etc/robot/projects/custom/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 --daemon
     docker update --restart=always $1-rsync
     # docker-compose build / up
-    docker-compose -p robot -f /etc/robot/projects/$1/osx-docker-compose.yml build
-    docker-compose -p robot -f /etc/robot/projects/$1/osx-docker-compose.yml up -d
+    docker-compose -p robot -f /etc/robot/projects/custom/$1/osx-docker-compose.yml build
+    docker-compose -p robot -f /etc/robot/projects/custom/$1/osx-docker-compose.yml up -d
 else
     # docker-compose build / up
-    docker-compose -p robot -f /etc/robot/projects/$1/docker-compose.yml build
-    docker-compose -p robot -f /etc/robot/projects/$1/docker-compose.yml up -d
+    docker-compose -p robot -f /etc/robot/projects/custom/$1/docker-compose.yml build
+    docker-compose -p robot -f /etc/robot/projects/custom/$1/docker-compose.yml up -d
 fi
 sleep 8
 

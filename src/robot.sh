@@ -38,12 +38,14 @@ function available_projects
 if [ "$1" != "" ]; then
     case $1 in
 
+
         # this will be used to create new projects from templates
         create )
 
             # run the create subscript as source
             . /etc/robot/src/create.sh
             ;;
+
 
         # this will build all arguments provided to it
         build )
@@ -69,11 +71,14 @@ if [ "$1" != "" ]; then
             # GOOD DYNAMIC PROJECT ACTION
             for project in "${project_list[@]}"
             do
-                #echo $project
+                # determine that projects containing folder
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+
+                # build if not mailhog
                 if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
                     . /etc/robot/src/dependancies.sh
                     nginx_check
-                    . /etc/robot/projects/$project/$project.install.sh $project
+                    . /etc/robot/projects/$project_folder/$project/$project.install.sh $project
                 fi
             done
             ;;

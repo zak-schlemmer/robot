@@ -23,7 +23,7 @@ services:
     image: template/db
     build:
       context: /etc/robot/
-      dockerfile: "./projects/template/mysql/Dockerfile"
+      dockerfile: "./projects/custom/template/mysql/Dockerfile"
     restart: always
     ports:
       - "9999:9999"
@@ -43,7 +43,7 @@ services:
     image: template/web
     build:
       context: /etc/robot
-      dockerfile: "./projects/template/apache2/Dockerfile"
+      dockerfile: "./projects/custom/template/apache2/Dockerfile"
     restart: always
     volumes:
       - template-rsync:/template:rw
