@@ -36,11 +36,6 @@ function usage
     echo "    rm         This will remove the containers for stopped projects. (does not remove site files)"
     echo "    connect    Connect local projects together."
     echo "" && echo ""
-    echo "Project Arguments:" && echo ""
-    echo "    mailhog"
-    echo "    vanilla"
-    echo "    all        <- (does all the things)"
-    echo ""
 }
 
 # help text for clean command

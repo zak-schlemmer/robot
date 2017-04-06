@@ -190,17 +190,17 @@ if [ "$1" != "" ]; then
                     exit
                 fi
 	            docker cp "${3}" "${project}"_db_1:/
-	            docker exec -t "${project}"_db_1 bash -c "mysql '${database}' < ${3}"
+	            docker exec -t "${project}"_db_1 bash -c "mysql '${project}' < ${3}"
 	            exit
 	            ;;
 	        export )
-                docker exec -t	"${project}"_db_1 bash -c "mysqldump '${database}' > '${database}'.'${datestamp}'.sql"
-                docker cp "${project}"_db_1:/"${database}"."${datestamp}".sql ./
+                docker exec -t	"${project}"_db_1 bash -c "mysqldump '${project}' > '${project}'.'${datestamp}'.sql"
+                docker cp "${project}"_db_1:/"${project}"."${datestamp}".sql ./
                 exit
                 ;;
             drop )
-                docker exec -t "${project}"_db_1 bash -c "mysql -e 'drop database ${database}'"
-                docker exec -t "${project}"_db_1 bash -c "mysql -e 'create database ${database}'"
+                docker exec -t "${project}"_db_1 bash -c "mysql -e 'drop database ${project}'"
+                docker exec -t "${project}"_db_1 bash -c "mysql -e 'create database ${project}'"
                 exit
                 ;;
             # prints 'robot db' help text

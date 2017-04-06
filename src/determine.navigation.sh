@@ -7,17 +7,6 @@
 ###################################
 
 
-# TO DO : will need to replace what remains here in favor of something dynamic
-
-case `pwd | sed 's/.*robot.dev\///'` in
-
-
-    "vanilla_drupal"* )
-        echo "/vanilla_drupal"
-        exit
-        ;;
-
-esac
-shift
-
-
+# TO DO
+# pretty simple, probably no need for this in a separate file anymore
+echo `pwd | sed 's/.*robot.dev//'`

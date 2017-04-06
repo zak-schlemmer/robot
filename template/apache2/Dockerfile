@@ -61,7 +61,7 @@ RUN echo "export TERM=xterm" >> /root/.bashrc
 RUN echo "PS1='\[\e[34m\]\u\[\e[m\]@\h:\w\$ '" >> /home/robot/.bashrc
 RUN echo "alias ll='ls -la'" >> /home/robot/.bashrc
 RUN echo "export TERM=xterm" >> /home/robot/.bashrc
-RUN echo "cd /storefront_develop" >> /home/robot/.bashrc
+RUN echo "cd /template" >> /home/robot/.bashrc
 
 # sendmail path
 RUN sed -i -e 's#;sendmail_path =#sendmail_path = \"\/opt\/go\/bin\/mhsendmail --smtp-addr=mailhog:1025\"#g' /etc/php5/apache2/php.ini
