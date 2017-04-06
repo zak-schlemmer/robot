@@ -64,7 +64,7 @@ case $template_select_option in
         # make all the things for the new project, using the name provided
         project_path=/etc/robot/projects/$project_name
         mkdir $project_path
-        cp -rf /etc/robot/template/drupal7/ $project_path/
+        cp -rf /etc/robot/template/drupal7/* $project_path/
         cp -rf /etc/robot/template/apache2 $project_path/
         cp -rf /etc/robot/template/mysql $project_path/
         cp -rf /etc/robot/template/docker-sync $project_path/
