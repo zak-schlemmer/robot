@@ -22,7 +22,7 @@ if [ "$OS" == "Darwin" ]; then
     echo "Getting docker-sync ready. Just a moment." && echo ""
     docker-sync start -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 --daemon #> /dev/null 2>&1
     docker-sync stop -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 #> /dev/null 2>&1
-    docker-sync clean -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 #> /dev/null 2>&1
+    docker-sync clean -c /etc/robot/projects/$1/docker-sync/docker-compose.yml #> /dev/null 2>&1
     docker-sync start -c /etc/robot/projects/$1/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/$1 --daemon
     docker update --restart=always $1-rsync
     # docker-compose build / up
