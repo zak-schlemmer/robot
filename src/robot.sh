@@ -17,16 +17,16 @@ function nginx_check
 {
     if [ "$(docker ps | grep -c nginx_1)" == 0 ]; then
         if [ "$(docker ps -a | grep -c nginx_1)" == 0 ]; then
-            docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml build
+            docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml build
         fi
-        docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml up -d
+        docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml up -d
     fi
 }
 
 # determine projects list
 function available_projects
 {
-    project_list=(`ls -p /etc/robot/projects | grep / | tr -d '/' | tr '\n' ' '`)
+    project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
 }
 
 
@@ -62,15 +62,15 @@ if [ "$1" != "" ]; then
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
                 . /etc/robot/src/dependancies.sh
                 nginx_check
-                docker-compose -p robot -f /etc/robot/projects/mailhog/docker-compose.yml build
-                docker-compose -p robot -f /etc/robot/projects/mailhog/docker-compose.yml up -d  | grep -vi warning
+                docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml build
+                docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml up -d  | grep -vi warning
             fi
 
             # GOOD DYNAMIC PROJECT ACTION
             for project in "${project_list[@]}"
             do
                 #echo $project
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ]; then
+                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
                     . /etc/robot/src/dependancies.sh
                     nginx_check
                     . /etc/robot/projects/$project/$project.install.sh $project

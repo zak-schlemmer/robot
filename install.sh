@@ -89,5 +89,32 @@ fi
 
 
 
+# create base robot-nginx and mailhog projects
+
+# robot-nginx
+# see if one exists
+if [ -d "/etc/robot/projects/robot-system/robot-nginx" ]; then
+    # probably no need to do anything aside from not overwrite
+    echo "You already have an existing 'robot-nginx'." && echo ""
+else
+    # just use exactly the template for now
+    mkdir -p /etc/robot/projects/robot-system
+    cp -r /etc/robot/template/robot-nginx /etc/robot/projects/robot-system/
+    echo "robot-nginx project created." && echo ""
+fi
+
+# mailhog #
+# see if one exists
+if [ -d "/etc/robot/projects/robot-system/mailhog" ]; then
+    # probably no need to do anything aside from not overwrite
+    echo "You already have an existing 'mailhog'." && echo ""
+else
+    # just use exactly the template for now
+    mkdir -p /etc/robot/projects/robot-system
+    cp -r /etc/robot/template/mailhog /etc/robot/projects/robot-system/
+    echo "mailhog project created." && echo ""
+fi
+
+
 # done
 echo "You're all set! Enjoy!" && echo ""

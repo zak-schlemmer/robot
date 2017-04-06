@@ -10,10 +10,8 @@
 # some sort of option of the template to use
 echo ""
 echo "Please pick a base template to use:" && echo ""
-echo "       ( 1 ) robot-nginx      <-  !!! YOU NEED THIS !!!"
-echo "       ( 2 ) mailhog          <-  this will handle all mail from projects"
-echo "       ( 3 ) drupal 7.54      <-  a vanilla d7 install in 2 containers apache2/mysql"
-echo "       ( 4 ) drupal 8.2.7     <-  a vanilla d8 install in 2 containers apache2/mysql"
+echo "       ( 1 ) drupal 7.54      <-  a vanilla d7 install in 2 containers apache2/mysql"
+echo "       ( 2 ) drupal 8.2.7     <-  a vanilla d8 install in 2 containers apache2/mysql"
 echo ""
 echo -n "Numbered Choice: "
 read template_select_option && echo ""
@@ -23,48 +21,17 @@ read template_select_option && echo ""
 case $template_select_option in
 
 
-    ###############
-    # robot-nginx #
-    ###############
-    1 )
-        # see if one exists
-        if [ -d "/etc/robot/projects/robot-nginx" ]; then
-            # probably no need to do anything aside from not overwrite
-            echo "You already have an existing 'robot-nginx'." && echo ""
-        else
-            # just use exactly the template for now
-            mkdir -p /etc/robot/projects
-            cp -r /etc/robot/template/robot-nginx /etc/robot/projects/
-            echo "robot-nginx project created." && echo ""
-        fi
-    ;;
-
-    ###########
-    # mailhog #
-    ###########
-    2 )
-        # see if one exists
-        if [ -d "/etc/robot/projects/mailhog" ]; then
-            # probably no need to do anything aside from not overwrite
-            echo "You already have an existing 'mailhog'." && echo ""
-        else
-            # just use exactly the template for now
-            mkdir -p /etc/robot/projects
-            cp -r /etc/robot/template/mailhog /etc/robot/projects/
-            echo "mailhog project created." && echo ""
-        fi
-    ;;
 
     ###############
     # drupal 7.54 #
     ###############
-    3 )
+    1 )
         # take in a project name for this one
         echo "What would you like to use as a project name?"
         echo -n "(You will want to keep it short and simple): "
         read project_name && echo ""
         # make all the things for the new project, using the name provided
-        project_path=/etc/robot/projects/$project_name
+        project_path=/etc/robot/projects/custom/$project_name
         mkdir -p $project_path
         cp -rf /etc/robot/template/drupal7/* $project_path/
         cp -rf /etc/robot/template/apache2 $project_path/
@@ -84,28 +51,28 @@ case $template_select_option in
         mv $project_path/drupal7.install.sh $project_path/$project_name.install.sh
         # find next available apache2 port
         for ((i=81;i<=181;i++)); do
-            if [ `cat /etc/robot/projects/*/apache2/*.apache2.ports.conf | grep Listen | tr -d 'Listen ' | grep -c $i` == "0" ]; then
+            if [ `cat /etc/robot/projects/*/*/apache2/*.apache2.ports.conf | grep Listen | tr -d 'Listen ' | grep -c $i` == "0" ]; then
                 apache_port=$i
                 break
             fi
         done
         # find next available mysql port
         for ((i=3301;i<=3401;i++)); do
-            if [ `cat /etc/robot/projects/*/mysql/default.my.cnf | grep port | tr -d 'port = ' | grep -c $i` == "0" ]; then
+            if [ `cat /etc/robot/projects/*/*/mysql/default.my.cnf | grep port | tr -d 'port = ' | grep -c $i` == "0" ]; then
                 mysql_port=$i
                 break
             fi
         done
         # find next available docker-sync port
         for ((i=10801;i<=10901;i++)); do
-            if [ `cat /etc/robot/projects/*/docker-sync/docker-compose.yml | grep "sync_host_port" | tr -d 'sync_host_port: ' | grep -c $i` == "0" ]; then
+            if [ `cat /etc/robot/projects/*/*/docker-sync/docker-compose.yml | grep "sync_host_port" | tr -d 'sync_host_port: ' | grep -c $i` == "0" ]; then
                 docker_sync_port=$i
                 break
             fi
         done
         # find next available IP
         for ((i=2;i<=254;i++)); do
-            if [ `grep -rh "ipv4_address: 172.72.72" /etc/robot/projects/*/docker-compose.yml | sed  's/        ipv4_address: //' | grep -c "172.72.72.${i}"` == "0" ]; then
+            if [ `grep -rh "ipv4_address: 172.72.72" /etc/robot/projects/*/*/docker-compose.yml | sed  's/        ipv4_address: //' | grep -c "172.72.72.${i}"` == "0" ]; then
                 next_ip=$i
                 break
             fi
@@ -133,13 +100,13 @@ case $template_select_option in
             sudo -E bash -c 'echo "172.72.72.254 ${project_name}.robot" >> /etc/hosts'
         fi
         # update nginx
-        sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-nginx/template.nginx.conf
-        cat /etc/robot/projects/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-nginx/template.nginx.conf
-        sed -i -e "s/template/${project_name}/g" /etc/robot/projects/robot-nginx/template.nginx.conf
-        sed -i -e "s/8080/${apache_port}/g" /etc/robot/projects/robot-nginx/template.nginx.conf
-        echo "      - '${project_name}.robot:172.72.72.${apache2_next_ip}'" >> /etc/robot/projects/robot-nginx/docker-compose.yml
-        docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml build
-        docker-compose -p robot -f /etc/robot/projects/robot-nginx/docker-compose.yml up -d
+        sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        sed -i -e "s/template/${project_name}/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        sed -i -e "s/8080/${apache_port}/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        echo "      - '${project_name}.robot:172.72.72.${apache2_next_ip}'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
+        docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml build
+        docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml up -d
 
         # cleanup for poor work on OSX sed's
         find $project_path/ -name "*-e" | xargs rm -rf
@@ -148,7 +115,7 @@ case $template_select_option in
     ################
     # drupal 8.2.7 #
     ################
-    4 )
+    2 )
 
        # TO DO : put all of d8 here
 

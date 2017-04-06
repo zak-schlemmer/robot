@@ -16,7 +16,7 @@ services:
     image: robot-nginx
     build:
       context: /etc/robot/
-      dockerfile: "projects/robot-nginx/Dockerfile"
+      dockerfile: "projects/robot-system/robot-nginx/Dockerfile"
     restart: always
     command: nginx
     ports:
