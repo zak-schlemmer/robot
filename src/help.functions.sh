@@ -73,6 +73,7 @@ function sync_help
     echo "usage: robot sync COMMAND" && echo ""
     echo "Commands:"
     echo "    status        show if the auto sync is STOPPED or RUNNING for your project location"
+    echo "    test          this will manually check that something syncs and then remove it"
     echo "    start         start auto-sync for your project location"
     echo "    stop          stop auto-sync for your project location"
     echo "    restart       restart auto-sync for your project location"

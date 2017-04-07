@@ -50,10 +50,43 @@ case $2 in
 
     # check if sync is running
     status )
-        if [ ! -f ~/robot.dev/docker-sync${where}/daemon.pid ]; then
-            echo "" && echo "auto-sync for this project is: STOPPED" && echo ""
+        # see if the sync container is running for the project
+        if [ `docker ps | grep -i "${project}"-rsync | grep -c -i "restart"` == "1" ]; then
+            echo "" && echo "You sync container for this project seems messed up."
+            echo "I'm going to go ahead and fix that for you."
+            docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync"${where}" > /dev/null 2>&1
+            docker-sync clean -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml > /dev/null 2>&1
+            docker rm -f "${project}"-rsync > /dev/null 2>&1
+            docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync"${where}" --daemon
+            echo "" && echo "docker-sync for this project should be fixed." && echo ""
         else
-            echo "" && echo "auto-sync for this project is: RUNNING" && echo ""
+        # show status
+            if [ ! -f ~/robot.dev/docker-sync"${where}"/daemon.pid ]; then
+                echo "" && echo "auto-sync for this project is: STOPPED" && echo ""
+            else
+                echo "" && echo "auto-sync for this project is: RUNNING" && echo ""
+            fi
+        fi
+
+        ;;
+
+    # manually checks if a new file will sync
+    test )
+        # create a file
+        touch ~/robot.dev/$project/sync-test-file.txt
+        # wait
+        echo "" && echo "Checking sync now. One moment." && echo ""
+        sleep 8
+        # see if file exists
+        if [ `docker exec "${project}"_web_1 bash -c "cd /$project && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
+            echo "The files sync'd successfully." && echo ""
+            rm ~/robot.dev/$project/sync-test-file.txt
+            docker exec "${project}"_web_1 bash -c "rm /$project/sync-test-file.txt"
+            echo "I have removed the test file for you." && echo ""
+        else
+            echo "Your sync didn't appear to work." && echo ""
+            echo "Running 'robot sync status' can look for issues and attempt to fix them now."
+            echo "Maybe try that." && echo ""
         fi
         ;;
 
