@@ -43,7 +43,7 @@ if [ "$1" != "" ]; then
         create )
 
             # run the create subscript as source
-            . /etc/robot/src/create.sh
+            . /etc/robot/src/create.sh "$2"
             ;;
 
 

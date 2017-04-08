@@ -7,6 +7,20 @@
 ###################################
 
 
+# check if a name was provided
+if [ "$1" == "" ]; then
+    # take in a project name
+    echo "" && echo "What would you like to use as a project name?"
+    echo "" && echo -n "(You will want to keep it short and simple): "
+    read project_name && echo ""
+else
+    project_name="$1"
+fi
+
+# make all the things for the new project, using the name provided
+project_path=/etc/robot/projects/custom/$project_name
+mkdir -p $project_path
+
 # some sort of option of the template to use
 echo ""
 echo "Please pick a base template to use:" && echo ""
@@ -16,23 +30,15 @@ echo ""
 echo -n "Numbered Choice: "
 read template_select_option && echo ""
 
-
 # create project from template
 case $template_select_option in
-
 
 
     ###############
     # drupal 7.54 #
     ###############
     1 )
-        # take in a project name for this one
-        echo "What would you like to use as a project name?"
-        echo -n "(You will want to keep it short and simple): "
-        read project_name && echo ""
-        # make all the things for the new project, using the name provided
-        project_path=/etc/robot/projects/custom/$project_name
-        mkdir -p $project_path
+        # copy everything from templates
         cp -rf /etc/robot/template/drupal7/* $project_path/
         cp -rf /etc/robot/template/apache2 $project_path/
         cp -rf /etc/robot/template/mysql $project_path/
