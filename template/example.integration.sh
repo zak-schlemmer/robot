@@ -1,10 +1,10 @@
 #!/bin/bash
 
-######################################
-#        ROBOT DEVELOPMENT           #
-#  integrate projects example script #
-#       by: Zak Schlemmer            #
-######################################
+###################################
+#        ROBOT DEVELOPMENT        #
+#     integrate example script    #
+#         by: Zak Schlemmer       #
+###################################
 
 
 # I included a version of this file in my organizational private repository
@@ -100,22 +100,22 @@ sed -i -e "s/8080/8086/g" /etc/robot/projects/robot-system/robot-nginx/template.
 # This part adds the IP allocation to the 'robot-nginx' container and rebuilds it
 
 # I found it easier to set these one by one
-if [ `grep -c sfdev /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
+if [ `grep -c myproject1 /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
     echo "      - 'myproject1.robot:172.72.72.101'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
 fi
-if [ `grep -c sfedge /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
+if [ `grep -c myproject2 /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
     echo "      - 'myproject2.robot:172.72.72.103'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
 fi
-if [ `grep -c flightcontrol /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
+if [ `grep -c myproject3 /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
     echo "      - 'myproject3.robot:172.72.72.105'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
 fi
-if [ `grep -c designer /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
+if [ `grep -c myproject4 /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
     echo "      - 'myproject4.robot:172.72.72.107'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
 fi
-if [ `grep -c tupssbo /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
+if [ `grep -c <web_1> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
     echo "      - '<web_1>.robot:172.72.72.110'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
 fi
-if [ `grep -c tupsscenter /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
+if [ `grep -c <web_2> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml` == "0" ]; then
     echo "      - '<web_2>.robot:172.72.72.112'" >> /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml
 fi
 
@@ -132,4 +132,5 @@ docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-c
 
 
 # let me know if you have any comments, questions, or concerns
-# ENJOY !!!
+
+#               !!! ENJOY !!!
