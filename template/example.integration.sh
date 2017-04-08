@@ -75,7 +75,7 @@ done
 # update local /etc/hosts
 if [ `uname -s` == "Darwin" ]; then
     sudo -E bash -c 'echo "10.254.254.254 <web_1>.robot" >> /etc/hosts'
-    sudo -E bash -c 'echo "10.254.254.254 <web_2.robot" >> /etc/hosts'
+    sudo -E bash -c 'echo "10.254.254.254 <web_2>.robot" >> /etc/hosts'
 else
     sudo -E bash -c 'echo "172.72.72.254 <web_1>.robot" >> /etc/hosts'
     sudo -E bash -c 'echo "172.72.72.254 <web_2>.robot" >> /etc/hosts'
@@ -85,12 +85,12 @@ fi
 # <web_1>
 sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
 cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-sed -i -e "s/template//g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+sed -i -e "s/template/<web_1>/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
 sed -i -e "s/8080/8085/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
 # <web_2>
 sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
 cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-sed -i -e "s/template/tupsscenter/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+sed -i -e "s/template/<web_2>/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
 sed -i -e "s/8080/8086/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
 
 
