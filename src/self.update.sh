@@ -88,11 +88,16 @@ else
         fi
 
 
+        # this seems like it could break things now
+        # not going to refactor at this time, but keep here as a reminder
+
 		# rebuild nginx to get any needed changes
-		echo "I'm going to rebuild nginx to ensure that is up to date." && echo ""
-		docker stop nginx_1 > /dev/null 2>&1 && docker rm nginx_1 > /dev/null 2>&1
-		docker-compose -p robot -f /etc/robot/templates/robot-nginx/docker-compose.yml build
-		docker-compose -p robot -f /etc/robot/templates/robot-nginx/docker-compose.yml up -d
+		#echo "I'm going to rebuild nginx to ensure that is up to date." && echo ""
+		#docker stop nginx_1 > /dev/null 2>&1 && docker rm nginx_1 > /dev/null 2>&1
+		#docker-compose -p robot -f /etc/robot/templates/robot-nginx/docker-compose.yml build
+		#docker-compose -p robot -f /etc/robot/templates/robot-nginx/docker-compose.yml up -d
+
+
 		# instill happy thoughts
 		echo "" && echo "Your robot has been updated! Enjoy!" && echo ""
 	fi
