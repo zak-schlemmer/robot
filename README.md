@@ -2,7 +2,7 @@
 
 ## docker-compose based local development ##
 
-This project allows you to both easily manage all your local development.
+This project allows you to easily manage all your local development.
 
 You can create new projects from templates, that can be saved to seperate repositories.
 
