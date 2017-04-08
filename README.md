@@ -1,7 +1,6 @@
 # robot #
-## docker-compose based local development ##
 
------------------
+## docker-compose based local development ##
 
 This project allows you to both easily manage all your local development.
 
@@ -120,7 +119,7 @@ robot ssh
 
 you will be the user: **root**
 ```
-robot ssh fc_db_1
+robot ssh project5_db_1
 ```
 
 **configure a ngrok vhost:**
