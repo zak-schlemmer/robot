@@ -17,6 +17,13 @@ else
     project_name="$1"
 fi
 
+# check for duplicate project name
+if [ `ls -p /etc/robot/projects/* | grep / | grep -v : | grep -c "${project_name}/"` != "0" ]; then
+    echo "" && echo "A project named $project_name appears to already exist."
+    echo "" && echo "Please either remove the existing project by that name, or choose another name."
+    echo "" && exit
+fi
+
 # make all the things for the new project, using the name provided
 project_path=/etc/robot/projects/custom/$project_name
 mkdir -p $project_path
