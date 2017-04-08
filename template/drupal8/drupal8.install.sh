@@ -2,7 +2,7 @@
 
 ###################################
 #       ROBOT DEVELOPMENT         #
-#        drupal7 install          #
+#        drupal8 install          #
 #       by: Zak Schlemmer         #
 ###################################
 
@@ -14,7 +14,12 @@ OS=`uname -s`
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
 # git clone
-git clone --branch 7.54 https://git.drupal.org/project/drupal.git ~/robot.dev/$1
+git clone --branch 8.3.0 https://git.drupal.org/project/drupal.git ~/robot.dev/$1
+
+# composer install
+echo "" && echo "Composer - $1"
+cd ~/robot.dev/$1/ && composer -n install --prefer-dist
+sleep 1
 
 # start auto sync and use osx-specific .yml file if using OSX
 if [ "$OS" == "Darwin" ]; then
@@ -48,7 +53,7 @@ sleep 3
 # drupal install
 echo "" && echo "Drupal Install" && echo ""
 docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site-name=${1} --account-name=admin --account-pass=robot --account-mail=admin@robot.com --db-url=mysql://root:root@${1}-db:9999/${1}"
-docker exec -t $1_web_1 bash -c "cd /$1 && drush cc all"
+docker exec -t $1_web_1 bash -c "cd /$1 && drush cr"
 
 # fix permissions
 docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php"
