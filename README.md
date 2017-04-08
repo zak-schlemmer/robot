@@ -21,14 +21,16 @@ I will be working to outline this process here, create documentation, and create
 
 There are additional requirements for using robot in osx.
 
-The install and update will try to install/use homebrew.
+The install and update will try to install/use homebrew to implement these, but that doesn't work very well yet.
 
-If you do not want homebrew on your machine, you will need:
+I would recomend attempting to implement these items manually:
 
 * unison
 * unison-fsmonitor
 * fswatch
 * docker-sync
+
+The install/update scripts will skill attempting to implement these items if they exist.
 
 ----------------
 
