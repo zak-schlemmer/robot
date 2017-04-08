@@ -29,7 +29,7 @@
 #       ip /24:                 .2
 #       docker-sync port:       10801
 
-# I just added switched apache ports to the format: 8081
+# I just switched apache ports to the format: 8081
 # I then added 100 to the other values
 
 
