@@ -17,6 +17,7 @@ I will be working to outline this process here, create documentation, and create
 ### Requirements ###
 
 * [docker-compose](https://docs.docker.com/compose/)
+* [composer](https://getcomposer.org)
 
 There are additional requirements for using robot in osx.
 
