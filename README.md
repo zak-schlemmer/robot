@@ -73,15 +73,6 @@ e: admin@robot.com
 
 ----------------
 
-### Global Commands ####
-
-**create a project for use**
-```
-robot create
-robot create <project_name>
-```
------------------
-
 ### Commands Using Project Arguements ###
 
 **build out the projects:**
@@ -159,7 +150,14 @@ robot sync back
 
 ---------------------
 
-### Global Commands ###
+
+### Global Commands ####
+
+**create a project for use**
+```
+robot create
+robot create <project_name>
+```
 
 **update the robot project**
 
