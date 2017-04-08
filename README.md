@@ -187,4 +187,23 @@ robot clean all
 robot clean with-bleach
 ```
 
+-----------------
+
+### General Usage ###
+
+I will eventually list all the features and explain the use of each one.
+
+A few key items involed:
+
+* xdebug
+* blackfire
+* ngrok
+
+I have integrated my organization's custom projects into this new open source version.
+
+I have provided a heavily "commented" example integration script to help guild you if you wish to do the same:
+
+[example-integration-script](https://github.com/zak-schlemmer/robot/blob/master/template/example.integration.sh)
+
+This will help help guide you in creating a "drop-in-place" set of projects for your organization.
 
