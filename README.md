@@ -201,7 +201,7 @@ A few key items involed:
 
 I have integrated my organization's custom projects into this new open source version.
 
-I have provided a heavily "commented" example integration script to help guild you if you wish to do the same:
+I have provided a heavily "commented" example integration script, if you wish to do the same:
 
 [example-integration-script](https://github.com/zak-schlemmer/robot/blob/master/template/example.integration.sh)
 
