@@ -3,13 +3,15 @@
 
 -----------------
 
-This is just the begining.
+This project allows you to both easily manage all your local development.
 
-This was a organizational specific project, that I've taken a knife to.
+You can create new projects from templates, that can be saved to seperate repositories.
 
-I'm still working to sew it back up.
+I originally created this as an organizational specific project.
 
-This readme is true to that, and doesn't have much use at the moment.
+I have already managed to re-create those organizational projects in this new open source format.
+
+I will be working to outline this process here, create documentation, and create examples for reference.
 
 ----------------
 
@@ -52,18 +54,12 @@ db = <project_name>
 user = <project_name>
 pw = robot
 ```
-**db ports**
-
-(allows for mysql GUI client connections on osx)
-```
-TO DO
-```
 
 **site credentials:**
 ```
 u: admin
 p: robot
-e: admin@robot.robot
+e: admin@robot.com
 ```
 
 ----------------
@@ -80,12 +76,8 @@ e: admin@robot.robot
 **create a project for use**
 ```
 robot create
+robot create <project_name>
 ```
-
-### Project Arguments ###
-
-* < the name you give it >
-
 -----------------
 
 ### Commands Using Project Arguements ###
@@ -93,6 +85,96 @@ robot create
 **build out the projects:**
 
 ```
-robot build < my project name >
+robot build < my_project_name >
+robot build < my_project > < another_project > < any_number_of_projects >
 ```
+
+**rebuild project containers:**
+
+```
+#!bash
+robot rebuild < my_project > < other_my_project >
+```
+-----------------
+
+### Commands Based on Current Working Directory ###
+
+**run a drush command:**
+```
+robot drush cc all
+robot drush -y en entities
+robot drush sql-query "select * from users"
+```
+
+**ssh to the web container of the project:**
+
+you will be the user: **robot**
+```
+cd ~/robot.dev/my_sweet_project
+robot ssh
+```
+
+**ssh to a specific container from anywhere:**
+
+*(you can determine the name in 'robot list' or 'robot top')*
+
+you will be the user: **root**
+```
+robot ssh fc_db_1
+```
+
+**configure a ngrok vhost:**
+```
+robot ngrok
+```
+
+**Import / Export / Drop a Database**
+```
+robot db export
+robot db import my.sweet.db.dump.sql
+robot db drop
+```
+
+**Manage File Syncing**
+(osx only)
+```
+robot sync status
+robot sync test
+robot sync restart
+robot sync start
+robot sync stop
+robot sync up
+robot sync back
+```
+
+---------------------
+
+### Global Commands ###
+
+**update the robot project**
+
+```
+robot update
+```
+
+**see active container resource usage**
+
+```
+robot top
+```
+
+**list contains with information about them**
+
+```
+robot list
+```
+
+**run dangerous global clean commands**
+```
+robot clean volumes
+robot clean files
+robot clean all
+robot clean with-bleach
+```
+
 
