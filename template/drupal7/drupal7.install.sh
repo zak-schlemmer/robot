@@ -47,7 +47,7 @@ sleep 3
 
 # drupal install
 echo "" && echo "Drupal Install" && echo ""
-docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site-name=${1} --account-name=admin --account-pass=robot --account-mail=admin@robot.robot --db-url=mysql://root:root@${1}-db:9999/${1}"
+docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site-name=${1} --account-name=admin --account-pass=robot --account-mail=admin@robot.com --db-url=mysql://root:root@${1}-db:9999/${1}"
 docker exec -t $1_web_1 bash -c "cd /$1 && drush cc all"
 
 # fix permissions
