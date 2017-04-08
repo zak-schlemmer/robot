@@ -63,7 +63,7 @@ e: admin@robot.com
 
 ----------------
 
-### Site URL's ###
+### Site URL ###
 ```
 < the name you give it>.robot
 ```
@@ -91,9 +91,17 @@ robot build < my_project > < another_project > < any_number_of_projects >
 **rebuild project containers:**
 
 ```
-#!bash
 robot rebuild < my_project > < other_my_project >
 ```
+
+**other project management:**
+
+```
+robot stop < project_one > < project_two >
+robot rm < project_two >
+robot start < project_one> < project_three >
+```
+
 -----------------
 
 ### Commands Based on Current Working Directory ###
