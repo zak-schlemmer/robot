@@ -55,9 +55,9 @@ do
     # update local /etc/hosts
     export projects=$projects
     if [ `uname -s` == "Darwin" ]; then
-        sudo -E bash -c 'echo "10.254.254.254 ${printsites}.robot" >> /etc/hosts'
+        sudo -E bash -c 'echo "10.254.254.254 ${project}.robot" >> /etc/hosts'
     else
-        sudo -E bash -c 'echo "172.72.72.254 ${printsites}.robot" >> /etc/hosts'
+        sudo -E bash -c 'echo "172.72.72.254 ${project}.robot" >> /etc/hosts'
     fi
     # find project web port for robot-nginx integration
     port=`cat /etc/robot/projects/<my_organization>/apache2/$project.apache2.ports.conf | grep Listen | grep -v 443 | sed s'/Listen //'`
