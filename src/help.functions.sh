@@ -31,6 +31,7 @@ function usage
     echo "" && echo ""
     echo "Commands Taking Project Arguments - (See \"Project Arguments\" Below):" && echo ""
     echo "    build      This will build out the projects given as arguments."
+    echo "    rebuild    This will rebuild the containers for provided projects."
     echo "    stop       This will stop containers for projects provided."
     echo "    start      This will start containers for projects provided."
     echo "    rm         This will remove the containers for stopped projects. (does not remove site files)"
