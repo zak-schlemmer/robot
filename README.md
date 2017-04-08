@@ -30,7 +30,7 @@ I would recomend attempting to implement these items manually:
 * fswatch
 * docker-sync
 
-The install/update scripts will skill attempting to implement these items if they exist.
+The install/update scripts will skip attempting to implement these items if they exist.
 
 ----------------
 
