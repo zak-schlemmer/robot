@@ -81,10 +81,6 @@ if [ $os == "Darwin" ]; then
         brew install fswatch
         sudo gem install docker-sync
     fi
-#else
-    #TO DO
-    # use linux project.yml (warning: probably might break 'robot update' command)
-    #cp -f /etc/robot/docker-compose/linux-specific/* /etc/robot/docker-compose/
 fi
 
 
