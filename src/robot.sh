@@ -9,7 +9,7 @@
 
 
 # check - be somewhere that exists!
-if [ `ls -la | grep -c "total 0"` == "1" ]; then
+if [[ `uname -s` == "Linux" && `ls -la | grep -c "total 0"` == "1" ]] || [[ `uname -s` == "Darwin" && `ls -la` == "" ]]; then
     echo "" && echo "Hi! - It appears you are navigated to a directory that no longer exists!" && echo ""
     echo "Rumor has it, robot prefers to exists within existence." && echo ""
     echo "Please find your way back to existence." && echo ""
