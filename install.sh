@@ -97,9 +97,13 @@ if [ -d "/etc/robot/projects/robot-system/robot-nginx" ]; then
     # probably no need to do anything aside from not overwrite
     echo "You already have an existing 'robot-nginx'." && echo ""
 else
-    # just use exactly the template for now
     mkdir -p /etc/robot/projects/robot-system
-    cp -r /etc/robot/template/robot-nginx /etc/robot/projects/robot-system/
+    # use an osx specific robot-nginx
+    if [ $os == "Darwin" ]; then
+        cp -r /etc/robot/template/robot-nginx-osx /etc/robot/projects/robot-system/
+    else
+        cp -r /etc/robot/template/robot-nginx /etc/robot/projects/robot-system/
+    fi
     echo "robot-nginx project created." && echo ""
 fi
 

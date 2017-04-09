@@ -1,0 +1,28 @@
+version: '2'
+
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.72.72.0/24
+        gateway: 172.72.72.1
+
+services:
+
+  robot-nginx:
+    hostname: robot-nginx
+    container_name: robot_nginx_1
+    image: robot-nginx
+    build:
+      context: /etc/robot/
+      dockerfile: "projects/robot-system/robot-nginx/Dockerfile"
+    restart: always
+    command: nginx
+    ports:
+      - "80:80"
+    networks:
+      net:
+        ipv4_address: 172.72.72.254
+    extra_hosts:
+      - 'mailhog.robot:172.72.72.253'
