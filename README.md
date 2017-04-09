@@ -203,5 +203,5 @@ I have provided a heavily "commented" example integration script, if you wish to
 
 [example-integration-script](https://github.com/zak-schlemmer/robot/blob/master/template/example.integration.sh)
 
-This will help help guide you in creating a "drop-in-place" set of projects for your organization.
+This will help guide you in creating a "drop-in-place" set of projects for your organization.
 
