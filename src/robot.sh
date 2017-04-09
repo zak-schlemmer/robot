@@ -8,11 +8,22 @@
 
 
 
+# check - be somewhere that exists!
+if [ `ls -la | grep -c "total 0"` == "1" ]; then
+    echo "" && echo "Hi! - It appears you are navigated to a directory that no longer exists!" && echo ""
+    echo "Rumor has it, robot prefers to exists within existence." && echo ""
+    echo "Please find your way back to existence." && echo ""
+    echo "Running:" && echo "" && echo "cd ~" && echo ""
+    echo "Would do the trick!" && echo ""
+    exit
+fi
+
+
 # include help functions
 . /etc/robot/src/help.functions.sh
 
 
-# repetitive nginx check
+# repetitive nginx check function
 function nginx_check
 {
     if [ "$(docker ps | grep -c nginx_1)" == 0 ]; then
@@ -23,7 +34,7 @@ function nginx_check
     fi
 }
 
-# determine projects list
+# determine projects list function
 function available_projects
 {
     project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
