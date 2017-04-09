@@ -35,12 +35,6 @@ else
 		git pull > /dev/null 2>&1
 		# replace the bin command
 		cp -f /etc/robot/src/robot.sh /usr/local/bin/robot
-		# create this loop back as that will now be needed
-		sudo ifconfig lo0 alias 10.254.254.254 > /dev/null 2>&1
-		sudo cp -f /etc/robot/src/robot.plist /Library/LaunchDaemons/ > /dev/null 2>&1
-
-		# assure hosts file is up to date
-		/etc/robot/src/hosts.file.sh
 
 		# check for osx
         os=`uname -s`
@@ -85,17 +79,6 @@ else
                 sudo gem install docker-sync
             fi
         fi
-
-
-        # this seems like it could break things now
-        # not going to refactor at this time, but keep here as a reminder
-
-		# rebuild nginx to get any needed changes
-		#echo "I'm going to rebuild nginx to ensure that is up to date." && echo ""
-		#docker stop nginx_1 > /dev/null 2>&1 && docker rm nginx_1 > /dev/null 2>&1
-		#docker-compose -p robot -f /etc/robot/templates/robot-nginx/docker-compose.yml build
-		#docker-compose -p robot -f /etc/robot/templates/robot-nginx/docker-compose.yml up -d
-
 
 		# instill happy thoughts
 		echo "" && echo "Your robot has been updated! Enjoy!" && echo ""

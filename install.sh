@@ -32,18 +32,15 @@ sudo cp -rf ./* /etc/robot
 sudo cp -rf ./.gi* /etc/robot
 sudo chown -R `whoami` /etc/robot
 
-# create this loop back as that will now be needed
-sudo ifconfig lo0 alias 10.254.254.254 > /dev/null 2>&1
-sudo cp -f /etc/robot/src/robot.plist /Library/LaunchDaemons/ > /dev/null 2>&1
-
-# run hosts here for now
-/etc/robot/src/hosts.file.sh
-
 # check for osx
 os=`uname -s`
 
 # get docker-sync
 if [ $os == "Darwin" ]; then
+
+    # create this loop back as that will now be needed
+    sudo ifconfig lo0 alias 10.254.254.254 > /dev/null 2>&1
+    sudo cp -f /etc/robot/src/robot.plist /Library/LaunchDaemons/ > /dev/null 2>&1
 
     # composer
     if ! [ -x "$(command -v composer)" ]; then
@@ -84,7 +81,6 @@ if [ $os == "Darwin" ]; then
 fi
 
 
-
 # create base robot-nginx and mailhog projects
 
 # robot-nginx
@@ -115,6 +111,25 @@ else
     echo "mailhog project created." && echo ""
 fi
 
+#check for entries in /etc/hosts
+existing_entries=`grep -rhc "\.robot" /etc/hosts`
+
+# if there are no entries make the start of them
+if [ "$existing_entries" -lt "1" ]; then
+
+	# make the entries
+	if [ "$os" == "Darwin" ]; then
+        # point osx to loop back alias
+        sudo bash -c 'echo "" >> /etc/hosts'
+        sudo bash -c 'echo "# current robot dev" >> /etc/hosts'
+		sudo bash -c 'echo "10.254.254.254 mailhog.robot" >> /etc/hosts'
+	else
+		# point linux to nginx
+		sudo bash -c 'echo "" >> /etc/hosts'
+		sudo bash -c 'echo "# current robot dev" >> /etc/hosts'
+		sudo bash -c 'echo "172.72.72.254 mailhog.robot" >> /etc/hosts'
+	fi
+fi
 
 # done
 echo "You're all set! Enjoy!" && echo ""

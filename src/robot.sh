@@ -135,12 +135,6 @@ if [ "$1" != "" ]; then
             ;;
 
 
-        hosts )
-            # entire command is in case something goes weird
-            . /etc/robot/src/hosts.file.sh
-            exit
-            ;;
-
         stop )
 
             # make projects list
@@ -272,7 +266,6 @@ if [ "$1" != "" ]; then
 
         update )
             # checks for updates, then prompts to make them if available
-            # makes changes, checks hosts, removes dangling volumes
             . /etc/robot/src/self.update.sh
             exit
             ;;
