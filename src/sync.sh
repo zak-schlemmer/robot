@@ -12,10 +12,14 @@
 
 # based on navigation to do per project get vars
 where=`. /etc/robot/src/determine.navigation.sh`
-project=` . /etc/robot/src/determine.project.sh`
+subproject=` . /etc/robot/src/determine.project.sh`
+
+# !!!! TO DO : DOCUMENT THIS SOMEWHERE !!!!!
+# remove any sub-project stuff
+project=`echo $subproject | cut -f1 -d"_"`
 
 # probably need this for most things
-project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+project_folder=`ls -d /etc/robot/projects/*/* | grep "${project}*" | sed 's/.*projects\///' | sed "s/\/.*//"`
 
 # arguments to 'robot sync'
 case $2 in

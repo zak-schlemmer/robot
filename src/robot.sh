@@ -72,7 +72,7 @@ if [ "$1" != "" ]; then
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # build if not mailhog
                 if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
@@ -108,7 +108,7 @@ if [ "$1" != "" ]; then
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # rebuild if not mailhog
                 if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
@@ -143,7 +143,7 @@ if [ "$1" != "" ]; then
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # stop if not mailhog
                 if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
@@ -174,7 +174,7 @@ if [ "$1" != "" ]; then
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 nginx_check
 
@@ -218,7 +218,7 @@ if [ "$1" != "" ]; then
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/${project}//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # rm if not mailhog
                 if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
