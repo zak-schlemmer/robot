@@ -27,6 +27,7 @@ case $2 in
     # force a 1 time sync from local -> container for your location
     up )
         docker cp ~/robot.dev/"${where}" "${subproject}"_web_1:/"${where}"
+        # TO DO : check if it's even a drupal site
         docker exec -u robot -i "${subproject}"_web_1 bash -c 'cd /${where} && drush cc all'
         ;;
 
@@ -83,14 +84,14 @@ case $2 in
         sleep 10
         # see if file exists
         if [ `docker exec "${subproject}"_web_1 bash -c "cd /$subproject && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
-            echo "The files sync'd successfully." && echo ""
+            echo "The test sync was: SUCCESSFUL." && echo ""
             rm ~/robot.dev/$subproject/sync-test-file.txt
             docker exec "${subproject}"_web_1 bash -c "rm /$subproject/sync-test-file.txt"
-            echo "I have removed the test file for you." && echo ""
+            echo "I have removed the test files for you." && echo ""
         else
             rm ~/robot.dev/$subproject/sync-test-file.txt
-            echo "Your sync didn't appear to work." && echo ""
-            echo "Running 'robot sync status' can look for issues and attempt to fix them now."
+            echo "The test sync: FAILED." && echo ""
+            echo "Running 'robot sync status' can look for issues and attempt to fix them now." && echo ""
             echo "Maybe try that." && echo ""
         fi
         ;;

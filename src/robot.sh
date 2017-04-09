@@ -231,7 +231,7 @@ if [ "$1" != "" ]; then
             done
             # NGINX
             if [ "$2" == "all" ]; then
-                docker-compose -p robot -f /etc/robot/docker-compose/nginx.yml rm -fa
+                docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml rm -fa
             fi
             ;;
 

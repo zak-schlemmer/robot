@@ -38,8 +38,7 @@ else
 		# create this loop back as that will now be needed
 		sudo ifconfig lo0 alias 10.254.254.254 > /dev/null 2>&1
 		sudo cp -f /etc/robot/src/robot.plist /Library/LaunchDaemons/ > /dev/null 2>&1
-		# remove danging volumes that will be caused by use of project name
-		#docker volume rm $(docker volume ls -qf dangling=true) > /dev/null 2>&1
+
 		# assure hosts file is up to date
 		/etc/robot/src/hosts.file.sh
 
