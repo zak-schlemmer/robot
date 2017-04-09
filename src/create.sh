@@ -24,9 +24,15 @@ if [ `ls -p /etc/robot/projects/* | grep / | grep -v : | grep -c "${project_name
     echo "" && exit
 fi
 
-# make all the things for the new project, using the name provided
-project_path=/etc/robot/projects/custom/$project_name
-mkdir -p $project_path
+# check for underscore character and tell them stuff
+if ! [ `echo $project_name | grep -c "_"` == "0" ]; then
+    echo ""
+    echo "I see you included an underscore character in your project name." && echo ""
+    echo "That character is used in robot to represent subprojects in the form: <project>_<subproject>" && echo ""
+    echo "I recommend you replace this character with a period or dash to achive the same human readable symbolism." && echo ""
+    exit
+fi
+
 
 # some sort of option of the template to use
 echo ""
@@ -36,6 +42,13 @@ echo "       ( 2 ) drupal 8.3.0     <-  a vanilla d8 install in 2 containers apa
 echo ""
 echo -n "Numbered Choice: "
 read template_select_option && echo ""
+
+
+
+# make all the things for the new project, using the name provided
+project_path=/etc/robot/projects/custom/$project_name
+mkdir -p $project_path
+
 
 # create project from template
 case $template_select_option in
