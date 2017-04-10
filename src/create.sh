@@ -59,10 +59,10 @@ case $template_select_option in
     ###############
     1 )
         # copy everything from templates
-        cp -rf /etc/robot/template/drupal7/* $project_path/
-        cp -rf /etc/robot/template/apache2 $project_path/
-        cp -rf /etc/robot/template/mysql $project_path/
-        cp -rf /etc/robot/template/docker-sync $project_path/
+        cp -rf /etc/robot/template/robot-system/drupal7/* $project_path/
+        cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+        cp -rf /etc/robot/template/robot-system/mysql $project_path/
+        cp -rf /etc/robot/template/robot-system/docker-sync $project_path/
         # replace the word template in stuff
         sed -i -e "s/template/${project_name}/g" \
             $project_path/docker-compose.yml \
@@ -147,10 +147,10 @@ case $template_select_option in
 
 
         # copy everything from templates
-        cp -rf /etc/robot/template/drupal8/* $project_path/
-        cp -rf /etc/robot/template/apache2 $project_path/
-        cp -rf /etc/robot/template/mysql $project_path/
-        cp -rf /etc/robot/template/docker-sync $project_path/
+        cp -rf /etc/robot/template/robot-system/drupal8/* $project_path/
+        cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+        cp -rf /etc/robot/template/robot-system/mysql $project_path/
+        cp -rf /etc/robot/template/robot-system/docker-sync $project_path/
         # replace the word template in stuff
         sed -i -e "s/template/${project_name}/g" \
             $project_path/docker-compose.yml \
