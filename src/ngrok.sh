@@ -8,7 +8,7 @@
 
 
 # determine project (breaking it down this for purpose of vhost file names)
-project=`. /etc/robot/src/determine.project.sh`
+project=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
 
 # prompt user for alias
 echo ""

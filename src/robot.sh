@@ -40,6 +40,9 @@ function available_projects
     project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
 }
 
+# determine project function
+determine_project=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
+
 
 
 #-------------------------#
@@ -241,14 +244,12 @@ if [ "$1" != "" ]; then
             ;;
 
         drush )
-            # look where local user is
-            where=`. /etc/robot/src/determine.navigation.sh`
             # catch sql-query/sqlq to get quotes through
             if [ "$2" == "sql-query" ] || [ "$2" == "sqlq" ]; then
-                docker exec -u robot -i `. /etc/robot/src/determine.project.sh`_web_1 bash -c "cd ${where} && drush sqlq \"${@:3}\""
+                docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush sqlq \"${@:3}\""
             else
                 # otherwise just do the old way for now
-                docker exec -u robot -i `. /etc/robot/src/determine.project.sh`_web_1 bash -c "cd ${where} && drush ${*:2}"
+                docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush ${*:2}"
             fi
             exit
             ;;
@@ -256,7 +257,7 @@ if [ "$1" != "" ]; then
         ssh )
             if [ "$2" == "" ]; then
                 # if web head for project files use robot user
-                docker exec -u robot -it `. /etc/robot/src/determine.project.sh`_web_1 bash
+                docker exec -u robot -it "${determine_project}"_web_1 bash
             else
                 # otherwise root
                 docker exec -it "$2" bash
@@ -272,9 +273,6 @@ if [ "$1" != "" ]; then
 
 
         db )
-            # based on current local file location
-            project=`. /etc/robot/src/determine.project.sh`
-
             # make a 'file name friendly' date/time stamp
             datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
             # switch out for import / export
@@ -285,18 +283,18 @@ if [ "$1" != "" ]; then
                         echo "robot db import <good-dump-file>.sql"
                         exit
                     fi
-                    docker cp "${3}" "${project}"_db_1:/
-                    docker exec -t "${project}"_db_1 bash -c "mysql '${project}' < ${3}"
+                    docker cp "${3}" "${determine_project}"_db_1:/
+                    docker exec -t "${determine_project}"_db_1 bash -c "mysql ${determine_project} < ${3}"
                     exit
                     ;;
                 export )
-                    docker exec -t	"${project}"_db_1 bash -c "mysqldump '${project}' > '${project}'.'${datestamp}'.sql"
-                    docker cp "${project}"_db_1:/"${project}"."${datestamp}".sql ./
+                    docker exec -t	"${determine_project}"_db_1 bash -c "mysqldump ${determine_project} > ${determine_project}.'${datestamp}'.sql"
+                    docker cp "${determine_project}"_db_1:/"${determine_project}"."${datestamp}".sql ./
                     exit
                     ;;
                 drop )
-                    docker exec -t "${project}"_db_1 bash -c "mysql -e 'drop database ${project}'"
-                    docker exec -t "${project}"_db_1 bash -c "mysql -e 'create database ${project}'"
+                    docker exec -t "${determine_project}"_db_1 bash -c "mysql -e 'drop database ${determine_project}'"
+                    docker exec -t "${determine_project}"_db_1 bash -c "mysql -e 'create database ${determine_project}'"
                     exit
                     ;;
                 # prints 'robot db' help text

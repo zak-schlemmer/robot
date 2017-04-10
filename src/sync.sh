@@ -11,8 +11,8 @@
 . /etc/robot/src/help.functions.sh
 
 # based on navigation to do per project get vars
-where=`. /etc/robot/src/determine.navigation.sh`
-subproject=` . /etc/robot/src/determine.project.sh`
+where=`echo $(pwd | sed 's/.*robot.dev\///')`
+subproject=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
 
 # !!!! TO DO : DOCUMENT THIS SOMEWHERE !!!!!
 # remove any sub-project stuff
