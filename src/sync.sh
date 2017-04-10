@@ -10,8 +10,7 @@
 # include help functions
 . /etc/robot/src/help.functions.sh
 
-# based on navigation to do per project get vars
-where=`echo $(pwd | sed 's/.*robot.dev\///')`
+# based on navigation
 subproject=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
 
 # !!!! TO DO : DOCUMENT THIS SOMEWHERE !!!!!
@@ -26,31 +25,30 @@ case $2 in
 
     # force a 1 time sync from local -> container for your location
     up )
-        docker cp ~/robot.dev/"${where}" "${subproject}"_web_1:/"${where}"
-        # TO DO : check if it's even a drupal site
-        docker exec -u robot -i "${subproject}"_web_1 bash -c 'cd /${where} && drush cc all'
+        docker cp ~/robot.dev/"${subproject}" "${subproject}"_web_1:/
+        docker exec "${subproject}"_web_1 bash -c "chown -R robot:robot /${subproject}"
         ;;
 
     # force a 1 time sync from container -> local for your location
     back )
-        docker cp "${subproject}"_web_1:/"${where}" ~/robot.dev/
+        docker cp "${subproject}"_web_1:/"${subproject}" ~/robot.dev/
         ;;
 
     # restart the auto sync for your location
     restart )
-        docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${where}"
+        docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}"
         sleep 2
-        docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${where}" --daemon
+        docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" --daemon
         ;;
 
     # stop the auto sync for your location
     stop )
-        docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${where}"
+        docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}"
         ;;
 
     # start the auto sync for your location
     start )
-        docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${where}" --daemon
+        docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" --daemon
         ;;
 
     # check if sync is running
@@ -59,14 +57,14 @@ case $2 in
         if [ `docker ps | grep -i "${subproject}"-rsync | grep -c -i "restart"` == "1" ]; then
             echo "" && echo "You sync container for this project seems messed up."
             echo "I'm going to go ahead and fix that for you."
-            docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${where}" > /dev/null 2>&1
+            docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" > /dev/null 2>&1
             docker-sync clean -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml > /dev/null 2>&1
             docker rm -f "${subproject}"-rsync > /dev/null 2>&1
-            docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${where}" --daemon
+            docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" --daemon
             echo "" && echo "docker-sync for this project should be fixed." && echo ""
         else
         # show status
-            if [ ! -f ~/robot.dev/docker-sync/"${where}"/daemon.pid ]; then
+            if [ ! -f ~/robot.dev/docker-sync/"${subproject}"/daemon.pid ]; then
                 echo "" && echo "auto-sync for this project is: STOPPED" && echo ""
             else
                 echo "" && echo "auto-sync for this project is: RUNNING" && echo ""
