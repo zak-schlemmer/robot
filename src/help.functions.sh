@@ -34,7 +34,6 @@ function usage
     echo "    stop       This will stop containers for projects provided."
     echo "    start      This will start containers for projects provided."
     echo "    rm         This will remove the containers for stopped projects. (does not remove site files)"
-    echo "    connect    Connect local projects together."
     echo "" && echo ""
 }
 
