@@ -72,17 +72,11 @@ if [ "$1" != "" ]; then
             # make projects list
             available_projects
 
-            # in case nginx is down
-            if [ "$2 " == "all" ]; then
-                # get rid of old unused stuff here
-                docker volume rm $(docker volume ls -qf dangling=true) > /dev/null 2>&1
-                # start with this, if doing everything
-                nginx_check
-            fi
-            # MAILHOG / TO DO : figure out a better plan for this
-            if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
-                . /etc/robot/src/dependancies.sh
-                nginx_check
+            . /etc/robot/src/dependancies.sh
+            nginx_check
+
+            # MAILHOG
+            if [ `echo ${*:2}| grep -c "mailhog"` == 1 ]; then
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml build
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml up -d  | grep -vi warning
             fi
@@ -94,9 +88,7 @@ if [ "$1" != "" ]; then
                 project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # build if not mailhog
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
-                    . /etc/robot/src/dependancies.sh
-                    nginx_check
+                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] && [ ! $project == "mailhog" ]; then
                     . /etc/robot/projects/$project_folder/$project/$project.install.sh $project
                 fi
             done
@@ -105,18 +97,13 @@ if [ "$1" != "" ]; then
         # this will rebuild containers for arguments provided
         rebuild )
 
+            nginx_check
+
             # make projects list
             available_projects
 
-            # in case nginx is down
-            if [ "$2 " == "all" ]; then
-                # get rid of old unused stuff here
-                docker volume rm $(docker volume ls -qf dangling=true) > /dev/null 2>&1
-                # start with this, if doing everything
-                nginx_check
-            fi
             # MAILHOG
-            if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
+            if [ `echo ${*:2}| grep -c "mailhog"` == 1 ]; then
                 . /etc/robot/src/dependancies.sh
                 nginx_check
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml build
@@ -130,7 +117,7 @@ if [ "$1" != "" ]; then
                 project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # rebuild if not mailhog
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
+                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ] && [ ! $project == "robot-nginx" ]; then
                     if [ `uname -s` == "Darwin" ]; then
                         docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml build
                         docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml up -d  | grep -vi warning
@@ -158,12 +145,14 @@ if [ "$1" != "" ]; then
                 # determine that projects containing folder
                 project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
-                # stop if not mailhog
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
-                    if [ `uname -s` == "Darwin" ]; then
-                        docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml stop
-                    else
-                        docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml stop
+                # stop if not mailhog or robot-nginx
+                if [ ! $project == "robot-nginx" ] && [ ! $project == "mailhog" ]; then
+                    if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ]; then
+                        if [ `uname -s` == "Darwin" ]; then
+                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml stop
+                        else
+                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml stop
+                        fi
                     fi
                 fi
             done
@@ -191,12 +180,14 @@ if [ "$1" != "" ]; then
 
                 nginx_check
 
-                # start if not mailhog
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
-                    if [ `uname -s` == "Darwin" ]; then
-                        docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml start
-                    else
-                        docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml start
+                # start if not mailhog or robot-nginx
+                if [ ! $project == "robot-nginx" ] && [ ! $project == "mailhog" ]; then
+                    if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ]; then
+                        if [ `uname -s` == "Darwin" ]; then
+                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml start
+                        else
+                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml start
+                        fi
                     fi
                 fi
             done
@@ -233,12 +224,14 @@ if [ "$1" != "" ]; then
                 # determine that projects containing folder
                 project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
 
-                # rm if not mailhog
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ] && [ ! $project == "mailhog" ]; then
-                    if [ `uname -s` == "Darwin" ]; then
-                        docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml rm -fa
-                    else
-                        docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml rm -fa
+                # rm if not mailhog or robot-nginx
+                if [ ! $project == "robot-nginx" ] && [ ! $project == "mailhog" ]; then
+                    if [ `echo ${*:2}| grep -c "${project}"` == "1" ] || [ "$2" == "all" ]; then
+                        if [ `uname -s` == "Darwin" ]; then
+                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml rm -fa
+                        else
+                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml rm -fa
+                        fi
                     fi
                 fi
             done
