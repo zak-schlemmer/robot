@@ -40,9 +40,14 @@ function available_projects
     project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
 }
 
-# determine project function
+# determine project, output project name
 determine_project=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
 
+# check if a user is navigated to a robot project, return true or false in form: 1 or 0
+function pwd_robot_project
+{
+    echo `pwd | grep -c "robot.dev/"`
+}
 
 
 #-------------------------#
@@ -244,6 +249,11 @@ if [ "$1" != "" ]; then
             ;;
 
         drush )
+            # check pwd
+            if [ `pwd_robot_project` == "0" ]; then
+                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot drush' command."
+                echo "" && exit
+            fi
             # catch sql-query/sqlq to get quotes through
             if [ "$2" == "sql-query" ] || [ "$2" == "sqlq" ]; then
                 docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush sqlq \"${@:3}\""
@@ -256,10 +266,15 @@ if [ "$1" != "" ]; then
 
         ssh )
             if [ "$2" == "" ]; then
+                # check pwd
+                if [ `pwd_robot_project` == "0" ]; then
+                    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ssh' WITHOUT specifying a container name."
+                    echo "" && exit
+                fi
                 # if web head for project files use robot user
                 docker exec -u robot -it "${determine_project}"_web_1 bash
             else
-                # otherwise root
+                # otherwise root if container specified
                 docker exec -it "$2" bash
             fi
             exit
@@ -273,6 +288,11 @@ if [ "$1" != "" ]; then
 
 
         db )
+            # check pwd
+            if [ `pwd_robot_project` == "0" ]; then
+                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot db' commands."
+                echo "" && exit
+            fi
             # make a 'file name friendly' date/time stamp
             datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
             # switch out for import / export
@@ -283,7 +303,7 @@ if [ "$1" != "" ]; then
                         echo "robot db import <good-dump-file>.sql"
                         exit
                     fi
-                    docker cp "${3}" "${determine_project}"_db_1:/
+                    docker cp ./"${3}" "${determine_project}"_db_1:/
                     docker exec -t "${determine_project}"_db_1 bash -c "mysql ${determine_project} < ${3}"
                     exit
                     ;;
@@ -321,6 +341,11 @@ if [ "$1" != "" ]; then
 
 
         sync )
+            # check pwd
+            if [ `pwd_robot_project` == "0" ]; then
+                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot sync' commands."
+                echo "" && exit
+            fi
             # clean sub-script
             /etc/robot/src/sync.sh ${*}
             exit
@@ -328,6 +353,11 @@ if [ "$1" != "" ]; then
 
 
         ngrok )
+            # check pwd
+            if [ `pwd_robot_project` == "0" ]; then
+                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ngrok'."
+                echo "" && exit
+            fi
             # makes the changes needed to use ngrok
             /etc/robot/src/ngrok.sh
             exit
