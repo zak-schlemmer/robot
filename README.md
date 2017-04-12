@@ -23,7 +23,7 @@ There are additional requirements for using robot in osx.
 
 The install and update will try to install/use homebrew to implement these, but that doesn't work very well yet.
 
-I would recomend attempting to implement these items manually:
+I would recommend attempting to implement these items manually:
 
 * unison
 * unison-fsmonitor
@@ -73,84 +73,6 @@ e: admin@robot.com
 
 ----------------
 
-### Commands Using Project Arguements ###
-
-**build out the projects:**
-
-```
-robot build < my_project_name >
-robot build < my_project > < another_project > < any_number_of_projects >
-```
-
-**rebuild project containers:**
-
-```
-robot rebuild < my_project > < other_my_project >
-```
-
-**other project management:**
-
-```
-robot stop < project_one > < project_two >
-robot rm < project_two >
-robot start < project_one> < project_three >
-```
-
------------------
-
-### Commands Based on Current Working Directory ###
-
-**run a drush command:**
-```
-robot drush cc all
-robot drush -y en entities
-robot drush sql-query "select * from users"
-```
-
-**ssh to the web container of the project:**
-
-you will be the user: **robot**
-```
-cd ~/robot.dev/my_sweet_project
-robot ssh
-```
-
-**ssh to a specific container from anywhere:**
-
-*(you can determine the name in 'robot list' or 'robot top')*
-
-you will be the user: **root**
-```
-robot ssh project5_db_1
-```
-
-**configure a ngrok vhost:**
-```
-robot ngrok
-```
-
-**Import / Export / Drop a Database**
-```
-robot db export
-robot db import my.sweet.db.dump.sql
-robot db drop
-```
-
-**Manage File Syncing**
-(osx only)
-```
-robot sync status
-robot sync test
-robot sync restart
-robot sync start
-robot sync stop
-robot sync up
-robot sync back
-```
-
----------------------
-
-
 ### Global Commands ####
 
 **create a project for use**
@@ -186,6 +108,95 @@ robot clean with-bleach
 ```
 
 -----------------
+
+### Commands Using Project Arguements ###
+
+You can use 'all' as an argument to start/stop/rm/rebuild.
+
+It will check to make sure a applicable project exists for these actions.
+
+**build out the projects:**
+
+```
+robot build < my_project_name >
+robot build < my_project > < another_project > < any_number_of_projects >
+```
+
+**rebuild project containers:**
+
+```
+robot rebuild < my_project > < other_my_project >
+robot rebuild all
+```
+
+**other project management:**
+
+```
+robot stop < project_one > < project_two >
+robot stop all
+robot rm < project_two >
+robot rm all
+robot start < project_one> < project_three >
+robot start all
+```
+
+-----------------
+
+### Commands Based on Current Working Directory ###
+
+**run a drush command:**
+```
+robot drush cc all
+robot drush -y en entities
+robot drush sql-query "select * from users"
+```
+Take caution when using quotes with drush sql-query/sqlq; that needs improvements.
+
+You can always use 'robot ssh' -> 'drush' to avoid issues with that.
+
+**ssh to the web container of the project:**
+
+you will be the user: **robot**
+```
+cd ~/robot.dev/my_sweet_project
+robot ssh
+```
+
+**ssh to a specific container from anywhere:**
+
+*(you can determine the name in 'robot list' or 'robot top')*
+
+you will be the user: **root**
+```
+robot ssh project5_db_1
+```
+
+**configure a ngrok vhost:**
+```
+robot ngrok
+```
+
+**Import / Export / Drop a Database**
+```
+robot db export
+robot db import my.sweet.db.dump.sql
+robot db drop
+```
+
+**Manage File Syncing**
+
+( this is only applicable to osx, linux volume mounting makes this not necissary )
+```
+robot sync status
+robot sync test
+robot sync restart
+robot sync start
+robot sync stop
+robot sync up
+robot sync back
+```
+
+---------------------
 
 ### General Usage ###
 
