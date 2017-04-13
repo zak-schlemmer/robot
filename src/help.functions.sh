@@ -22,6 +22,7 @@ function usage
     echo "    help       Shows command usage information."
     echo "" && echo ""
     echo "Commands Based on Current Local Working Directory:" && echo ""
+    echo "    status     See information about the current project's containers"
     echo "    drush      Run a drush command on the web container of the project."
     echo "    ssh        \"ssh\" the web container of the project (optional: provide a container name to ssh as root)"
     echo "    ngrok      Allows you to configure the project with an ngrok alias."

@@ -281,6 +281,23 @@ if [ "$1" != "" ]; then
             exit
             ;;
 
+        status )
+            if [ "$2" == "" ]; then
+                # check pwd
+                if [ `pwd_robot_project` == "0" ]; then
+                    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot status'."
+                    echo "" && exit
+                fi
+                # print various status info
+                echo ""
+                echo "I see `docker ps |grep -c ${determine_project}_` containers running for this project." && echo ""
+                echo "`docker ps |grep ${determine_project}_ | grep -ic restart` of them are restarting." && echo ""
+                echo "Run 'robot list' to see more information" && echo ""
+            fi
+            exit
+            ;;
+
+
 
         db )
             # check pwd
