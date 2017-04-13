@@ -4,7 +4,7 @@
 
 This project allows you to easily manage all your local development.
 
-You can create new projects from templates, that can be saved to seperate repositories.
+You can create new projects from templates, that can be saved to separate repositories.
 
 I originally created this as an organizational specific project.
 
