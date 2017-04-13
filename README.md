@@ -182,6 +182,10 @@ robot db export
 robot db import my.sweet.db.dump.sql
 robot db drop
 ```
+**Check container statuses for a project**
+```
+robot status
+```
 
 **Manage File Syncing**
 
