@@ -1,5 +1,5 @@
 .idea
 projects/
-template/
-!template/robot-system
+template/*
+!template/robot-system/
 !template/example.integration.sh
