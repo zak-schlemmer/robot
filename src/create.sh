@@ -43,6 +43,14 @@ echo ""
 echo -n "Numbered Choice: "
 read template_select_option && echo ""
 
+# select php 5.6 or 7
+echo ""
+echo "Please select the php version you would like to use:" && echo ""
+echo "       ( 1 ) 5.6"
+echo "       ( 2 ) 7.0"
+echo ""
+echo -n "Numbered Choice: "
+read php_select_option && echo ""
 
 
 # make all the things for the new project, using the name provided
@@ -60,7 +68,15 @@ case $template_select_option in
     1 )
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/drupal7/* $project_path/
-        cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+        # check user php selection
+        case $php_select_option in
+            1 )
+                cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+                ;;
+            2 )
+                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                ;;
+            esac
         cp -rf /etc/robot/template/robot-system/mysql $project_path/
         cp -rf /etc/robot/template/robot-system/docker-sync $project_path/
         # replace the word template in stuff
@@ -148,7 +164,15 @@ case $template_select_option in
 
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/drupal8/* $project_path/
-        cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+        # check user php selection
+        case $php_select_option in
+            1 )
+                cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+                ;;
+            2 )
+                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                ;;
+            esac
         cp -rf /etc/robot/template/robot-system/mysql $project_path/
         cp -rf /etc/robot/template/robot-system/docker-sync $project_path/
         # replace the word template in stuff
