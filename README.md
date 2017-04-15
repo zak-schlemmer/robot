@@ -225,3 +225,8 @@ I have provided a heavily "commented" example integration script, if you wish to
 
 This will help guide you in creating a "drop-in-place" set of projects for your organization.
 
+You can also find more information about installing and using robot here:
+
+[github robot wiki](https://github.com/zak-schlemmer/robot/wiki)
+
+I'll be working to futher develop the information there via: [Document ALL the things](https://github.com/zak-schlemmer/robot/projects/10)
