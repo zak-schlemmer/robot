@@ -53,19 +53,21 @@
 for project in myproject1 myproject2 myproject3 myproject4
 do
     # update local /etc/hosts
-    export projects=$projects
+    export project=$project
     if [ `uname -s` == "Darwin" ]; then
         sudo -E bash -c 'echo "10.254.254.254 ${project}.robot" >> /etc/hosts'
     else
         sudo -E bash -c 'echo "172.72.72.254 ${project}.robot" >> /etc/hosts'
     fi
-    # find project web port for robot-nginx integration
-    port=`cat /etc/robot/projects/<my_organization>/apache2/$project.apache2.ports.conf | grep Listen | grep -v 443 | sed s'/Listen //'`
-    # update nginx
-    sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-    cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-    sed -i -e "s/template/${project}/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-    sed -i -e "s/8080/${port}/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    if [ `grep -c ${project}  /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf` == "0" ]; then
+        # find project web port for robot-nginx integration
+        port=`cat /etc/robot/projects/<my_organization>/apache2/$project.apache2.ports.conf | grep Listen | grep -v 443 | sed s'/Listen //'`
+        # update nginx
+        sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        sed -i -e "s/template/${project}/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+        sed -i -e "s/8080/${port}/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    fi
 done
 
 
@@ -74,24 +76,36 @@ done
 
 # update local /etc/hosts
 if [ `uname -s` == "Darwin" ]; then
-    sudo -E bash -c 'echo "10.254.254.254 <web_1>.robot" >> /etc/hosts'
-    sudo -E bash -c 'echo "10.254.254.254 <web_2>.robot" >> /etc/hosts'
+    if [ `grep -c <web_1> /etc/hosts` == "0" ]; then
+        sudo -E bash -c 'echo "10.254.254.254 <web_1>.robot" >> /etc/hosts'
+    fi
+    if [ `grep -c <web_2> /etc/hosts` == "0" ]; then
+        sudo -E bash -c 'echo "10.254.254.254 <web_2>.robot" >> /etc/hosts'
+    fi
 else
-    sudo -E bash -c 'echo "172.72.72.254 <web_1>.robot" >> /etc/hosts'
-    sudo -E bash -c 'echo "172.72.72.254 <web_2>.robot" >> /etc/hosts'
+    if [ `grep -c <web_1> /etc/hosts` == "0" ]; then
+        sudo -E bash -c 'echo "172.72.72.254 <web_1>.robot" >> /etc/hosts'
+    fi
+    if [ `grep -c <web_2> /etc/hosts` == "0" ]; then
+        sudo -E bash -c 'echo "172.72.72.254 <web_2>.robot" >> /etc/hosts'
+    fi
 fi
 
 # then update nginx
 # <web_1>
-sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-sed -i -e "s/template/<web_1>/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-sed -i -e "s/8080/8085/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+if [ `grep -c <web_1>  /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf` == "0" ]; then
+    sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    sed -i -e "s/template/<web_1>/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    sed -i -e "s/8080/8085/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+fi
 # <web_2>
-sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-sed -i -e "s/template/<web_2>/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
-sed -i -e "s/8080/8086/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+if [ `grep -c <web_2>  /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf` == "0" ]; then
+    sed -i -e "s/} # the end of all the things//" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    cat /etc/robot/projects/robot-system/robot-nginx/nginx.server.template.conf >> /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    sed -i -e "s/template/<web_2>/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+    sed -i -e "s/8080/8086/g" /etc/robot/projects/robot-system/robot-nginx/template.nginx.conf
+fi
 
 
 #-----------------------------------------------------------------------------------

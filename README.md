@@ -81,6 +81,11 @@ robot create
 robot create <project_name>
 ```
 
+**list availble projects**
+```
+robot projects
+```
+
 **update the robot project**
 
 ```

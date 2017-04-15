@@ -297,6 +297,10 @@ if [ "$1" != "" ]; then
             exit
             ;;
 
+        projects )
+            echo "" && echo "You have the following projects at your disposal in robot:" && echo ""
+            ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' && echo ""
+            ;;
 
 
         db )

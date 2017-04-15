@@ -16,6 +16,7 @@ function usage
     echo "Global Commands:" && echo ""
     echo "    create     Build a project from a template. (optional: provide a name as an argument)"
     echo "    update     This will trigger a check for updates, prompts for confirm to do so."
+    echo "    projects   Show a list of projects available in robot."
     echo "    top        Shows active container resource usage table in real time."
     echo "    list       Show a list of running containers with helpful information on them."
     echo "    clean      Docker/robot cleanup. Warning! This is global. (arguments: volumes, files, all, with-bleach)"
