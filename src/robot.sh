@@ -290,8 +290,8 @@ if [ "$1" != "" ]; then
                 fi
                 # print various status info
                 echo ""
-                echo "I see `docker ps |grep -c ${determine_project}_` containers running for this project." && echo ""
-                echo "`docker ps |grep ${determine_project}_ | grep -ic restart` of them are restarting." && echo ""
+                echo "I see `docker ps | grep -c ${determine_project}_` containers running for this project." && echo ""
+                echo "`docker ps | grep ${determine_project}_ | grep -ic restart` of them are restarting." && echo ""
                 echo "Run 'robot list' to see more information" && echo ""
             fi
             exit
@@ -299,7 +299,51 @@ if [ "$1" != "" ]; then
 
         projects )
             echo "" && echo "You have the following projects at your disposal in robot:" && echo ""
-            ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' && echo ""
+            project_data=`echo -e " NAME\tBUILT\tRUNNING~"`
+            project_data+=`echo -e "--------\t--------\t--------~"`
+            # for each project
+            for project in `ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' && echo ""`
+            do
+                # handle robot-nginx slightly different
+                if [ $project == "robot-nginx" ]; then
+                     # find if built
+                    if [ ! `docker ps -a | grep -c robot-nginx` == "0" ]; then
+                        built="YES"
+                        # if built find if running
+                        if [ ! `docker ps | grep -c robot-nginx` == "0" ]; then
+                            running="YES"
+                        else
+                            running="NO"
+                        fi
+                    else
+                        built="NO"
+                        running="n/a"
+                    fi
+                # everything else
+                else
+                    # find if built
+                    if [ ! `docker ps -a | grep -c ${project}_` == "0" ]; then
+                        built="YES"
+                        # if built find if running
+                        if [ ! `docker ps | grep -c ${project}_` == "0" ]; then
+                            running="YES"
+                        else
+                            running="NO"
+                        fi
+                    else
+                        built="NO"
+                        running="n/a"
+                    fi
+                fi
+
+                # combine project data
+                project_data+=`echo -e " ${project}\t${built}\t${running}~"`
+
+            done
+
+            # print stuff
+            echo $project_data | tr '~' '\n' | column -t
+            echo ""
             ;;
 
 
