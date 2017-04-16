@@ -48,14 +48,20 @@ sleep 3
 # wp-cli
 echo "" && echo "Wordpress Install" && echo ""
 docker exec -t $1_web_1 bash -c "curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
+docker exec -t $1_web_1 bash -c "chown robot:robot wp-cli.phar"
 docker exec -t $1_web_1 bash -c "chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp"
 
 # wordpress install
-docker exec -u robot -t $1_web_1 bash -c "cd /$1 && wp core config --dbname=${1} --dbuser=root --dbpass=root --dbhost=${1}-db:9999"
-docker exec -u robot -t $1_web_1 bash -c "cd /$1 && wp core install --url=${1}.robot  --title=${1} --admin_user=admin --admin_password=robot --admin_email="admin@robot.com""
+docker exec -t $1_web_1 bash -c "cd /$1 && wp --allow-root core config --dbname=${1} --dbuser=root --dbpass=root --dbhost=${1}-db:9999"
+docker exec -t $1_web_1 bash -c "cd /$1 && wp --allow-root core install --url=${1}.robot  --title=${1} --admin_user=admin --admin_password=robot --admin_email="admin@robot.com""
 
 # fix permissions
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
+
+# copy container back if osx
+if [ "$OS" == "Darwin" ]; then
+    docker cp $1_web_1:/$1 ~/robot.dev/
+fi
 
 # everything done
 echo "" && echo "$1 - Finished" && echo ""

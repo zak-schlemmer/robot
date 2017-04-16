@@ -59,5 +59,10 @@ docker exec -t $1_web_1 bash -c "cd /$1 && drush cr"
 docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php"
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
 
+# copy container back if osx
+if [ "$OS" == "Darwin" ]; then
+    docker cp $1_web_1:/$1 ~/robot.dev/
+fi
+
 # everything done
 echo "" && echo "$1 - Finished" && echo ""
