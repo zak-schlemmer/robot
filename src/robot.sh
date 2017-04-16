@@ -298,9 +298,9 @@ if [ "$1" != "" ]; then
             ;;
 
         projects )
+            # table header
             echo "" && echo "You have the following projects at your disposal in robot:" && echo ""
-            project_data=`echo -e " NAME\tBUILT\tRUNNING~"`
-            project_data+=`echo -e "--------\t--------\t--------~"`
+            project_data=`echo -e " NAME\tBUILT\tRUNNING~--------\t--------\t--------~"`
             # for each project
             for project in `ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' && echo ""`
             do
@@ -335,17 +335,13 @@ if [ "$1" != "" ]; then
                         running="n/a"
                     fi
                 fi
-
                 # combine project data
                 project_data+=`echo -e " ${project}\t${built}\t${running}~"`
-
             done
-
             # print stuff
             echo $project_data | tr '~' '\n' | column -t
             echo ""
             ;;
-
 
         db )
             # check pwd
