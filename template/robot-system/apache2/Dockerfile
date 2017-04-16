@@ -5,6 +5,7 @@ FROM debian:jessie
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
   sudo \
   telnet \
+  curl \
   vim \
   nano \
   net-tools \

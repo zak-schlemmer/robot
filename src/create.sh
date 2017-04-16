@@ -39,6 +39,7 @@ echo ""
 echo "Please pick a base template to use:" && echo ""
 echo "       ( 1 ) drupal 7.54      <-  a vanilla d7 install in 2 containers apache2/mysql"
 echo "       ( 2 ) drupal 8.3.0     <-  a vanilla d8 install in 2 containers apache2/mysql"
+echo "       ( 3 ) wordpress        <-  a vanilla wordpress install in 2 containers apache2/mysql"
 echo ""
 echo -n "Numbered Choice: "
 read template_select_option && echo ""
@@ -100,7 +101,29 @@ case $template_select_option in
             esac
         ;;
 
+
+    #############
+    # wordpress #
+    #############
+    3 )
+        # copy everything from templates
+        cp -rf /etc/robot/template/robot-system/wordpress/* $project_path/
+        # check user php selection
+        case $php_select_option in
+            1 )
+                # php5.6
+                cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+                ;;
+            2 )
+                # php7.0
+                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                ;;
+            esac
+        ;;
+
     esac
+
+
 
 # do everything else not option specific
 cp -rf /etc/robot/template/robot-system/mysql $project_path/
@@ -116,7 +139,12 @@ sed -i -e "s/template/${project_name}/g" \
 # project specific file names
 mv $project_path/apache2/template.apache2.ports.conf $project_path/apache2/$project_name.apache2.ports.conf
 mv $project_path/apache2/template.apache2.vhost.conf $project_path/apache2/$project_name.apache2.vhost.conf
-mv $project_path/drupal.install.sh $project_path/$project_name.install.sh
+# install per project type
+if [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
+    mv $project_path/drupal.install.sh $project_path/$project_name.install.sh
+elif [ $template_select_option == 3 ]; then
+    mv $project_path/wordpress.install.sh $project_path/$project_name.install.sh
+fi
 # find next available apache2 port
 for ((i=81;i<=181;i++)); do
     if [ `cat /etc/robot/projects/*/*/apache2/*.apache2.ports.conf | grep Listen | tr -d 'Listen ' | grep -c $i` == "0" ]; then

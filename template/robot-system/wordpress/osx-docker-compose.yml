@@ -1,0 +1,55 @@
+version: '2'
+
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.72.72.0/24
+        gateway: 172.72.72.1
+
+# docker-sync volume
+volumes:
+  template-rsync:
+    external: true
+
+
+services:
+
+  # mysql
+  template-db:
+    hostname: template-db
+    container_name: template_db_1
+    image: template/db
+    build:
+      context: /etc/robot/
+      dockerfile: "./projects/custom/template/mysql/Dockerfile"
+    restart: always
+    ports:
+      - "9999:9999"
+    environment:
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_DATABASE: template
+       MYSQL_USER: template
+       MYSQL_PASSWORD: robot
+    networks:
+      net:
+        ipv4_address: 172.72.72.333
+
+  # apache2/php
+  template-web:
+    hostname: template-web
+    container_name: template_web_1
+    image: template/web
+    build:
+      context: /etc/robot
+      dockerfile: "./projects/custom/template/apache2/Dockerfile"
+    restart: always
+    volumes:
+      - template-rsync:/template:rw
+    links:
+      - template-db
+    command: apache2ctl -D FOREGROUND
+    networks:
+      net:
+        ipv4_address: 172.72.72.444

@@ -11,6 +11,7 @@ RUN wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
   sudo \
   telnet \
+  curl \
   vim \
   nano \
   net-tools \
