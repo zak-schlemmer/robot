@@ -259,6 +259,16 @@ if [ "$1" != "" ]; then
             exit
             ;;
 
+        wp )
+            # check pwd
+            if [ `pwd_robot_project` == "0" ]; then
+                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot wp' command."
+                echo "" && exit
+            fi
+            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && wp ${*:2}"
+            exit
+            ;;
+
         ssh )
             if [ "$2" == "" ]; then
                 # check pwd
