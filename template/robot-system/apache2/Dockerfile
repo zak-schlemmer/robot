@@ -72,10 +72,5 @@ RUN wget -O - https://packagecloud.io/gpg.key | apt-key add -
 RUN echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list
 RUN apt-get update && apt-get install blackfire-agent blackfire-php
 
-# drush
-RUN wget http://files.drush.org/drush.phar
-RUN chmod +x drush.phar
-RUN mv drush.phar /usr/local/bin/drush
-
 # enable modrewrite
 RUN a2enmod rewrite

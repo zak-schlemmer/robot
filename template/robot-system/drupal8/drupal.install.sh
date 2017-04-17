@@ -50,6 +50,10 @@ else
 fi
 sleep 3
 
+# drush
+docker exec -t $1_web_1 bash -c "wget http://files.drush.org/drush.phar"
+docker exec -t $1_web_1 bash -c "chmod +x drush.phar && mv drush.phar /usr/local/bin/drush"
+
 # drupal install
 echo "" && echo "Drupal Install" && echo ""
 docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site-name=${1} --account-name=admin --account-pass=robot --account-mail=admin@robot.com --db-url=mysql://root:root@${1}-db:9999/${1}"

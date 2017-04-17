@@ -46,12 +46,13 @@ fi
 sleep 3
 
 # wp-cli
-echo "" && echo "Wordpress Install" && echo ""
+echo "" && echo "wp-cli Install" && echo ""
 docker exec -t $1_web_1 bash -c "curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
 docker exec -t $1_web_1 bash -c "chown robot:robot wp-cli.phar"
 docker exec -t $1_web_1 bash -c "chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp"
 
 # wordpress install
+echo "" && echo "Wordpress Install" && echo ""
 docker exec -t $1_web_1 bash -c "cd /$1 && wp --allow-root core config --dbname=${1} --dbuser=root --dbpass=root --dbhost=${1}-db:9999"
 docker exec -t $1_web_1 bash -c "cd /$1 && wp --allow-root core install --url=${1}.robot  --title=${1} --admin_user=admin --admin_password=robot --admin_email="admin@robot.com""
 
