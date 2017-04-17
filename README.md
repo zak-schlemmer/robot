@@ -145,11 +145,13 @@ robot start all
 
 ### Commands Based on Current Working Directory ###
 
-**run a drush command:**
+**run a drush/wp command:**
 ```
 robot drush cc all
 robot drush -y en entities
 robot drush sql-query "select * from users"
+robot wp user list
+robot wp plugin install wp-super-cache
 ```
 Take caution when using quotes with drush sql-query/sqlq; that needs improvements.
 
