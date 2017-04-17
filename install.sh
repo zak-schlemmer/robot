@@ -35,49 +35,11 @@ sudo chown -R `whoami` /etc/robot
 # check for osx
 os=`uname -s`
 
-# get docker-sync
+# make loopback alias and launch daemon
 if [ $os == "Darwin" ]; then
-
     # create this loop back as that will now be needed
     sudo ifconfig lo0 alias 10.254.254.254 > /dev/null 2>&1
     sudo cp -f /etc/robot/src/robot.plist /Library/LaunchDaemons/ > /dev/null 2>&1
-
-    # composer
-    if ! [ -x "$(command -v composer)" ]; then
-        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-        php -r "if (hash_file('SHA384', 'composer-setup.php') === '55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-        php composer-setup.php
-        cp composer.phar /usr/bin/composer
-        php -r "unlink('composer-setup.php');"
-        rm composer.phar
-    fi
-
-    # docker-sync things
-    if ! [ -x "$(command -v docker-sync)" ]; then
-        # get homebrew if not installed
-        if ! [ -x "$(command -v brew)" ]; then
-            echo "Installing homebrew just because...."
-            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        fi
-        # use homebrew to grab unison locally
-        if ! [ -x "$(command -v unison)" ]; then
-            echo "Installing unison." && echo ""
-            brew install unison
-        fi
-        # unison-fsmonitor for sync
-        if ! [ -x "$(command -v unison-fsmonitor)" ]; then
-            if ! [ -x "$(command -v pip)" ]; then
-                echo "Installing pip." && echo ""
-                sudo easy_install pip
-            fi
-            echo "Setting up unison-fsmonitor." && echo ""
-            sudo pip install MacFSEvents
-            curl -o /usr/local/bin/unison-fsmonitor -L https://raw.githubusercontent.com/hnsl/unox/master/unox.py
-            chmod +x /usr/local/bin/unison-fsmonitor
-        fi
-        brew install fswatch
-        sudo gem install docker-sync
-    fi
 fi
 
 
