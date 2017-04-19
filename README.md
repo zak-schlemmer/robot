@@ -153,9 +153,6 @@ robot drush sql-query "select * from users"
 robot wp user list
 robot wp plugin install wp-super-cache
 ```
-Take caution when using quotes with drush sql-query/sqlq; that needs improvements.
-
-You can always use 'robot ssh' -> 'drush' to avoid issues with that.
 
 **ssh to the web container of the project:**
 
