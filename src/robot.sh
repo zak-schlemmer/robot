@@ -244,18 +244,51 @@ if [ "$1" != "" ]; then
             ;;
 
         drush )
+
             # check pwd
             if [ `pwd_robot_project` == "0" ]; then
                 echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot drush' command."
                 echo "" && exit
             fi
+
+            # build string
+            command="drush"
+            # check all arguments after drush
+            for i in "${@:2}"
+            do
+                # if there are spaces, the argument was quoted at cli
+                if [ `echo $i | grep \ | wc -l` == "1" ]; then
+                    # see if that argument contains double quotes (ie. singles were used)
+                    if [ `echo $i | grep -c '"'` == "0" ]; then
+                        # add double quotes if no double quotes contained in argument
+                        command+=" \"$i\""
+                    else
+                        # add single quotes if there were double quotes
+                        command+=" '$i'"
+                    fi
+                else
+                    # if no spaces just add to the string
+                    command+=" $i"
+                fi
+            done
+
+            #echo "cd ${determine_project} && ${command}"
+
+            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
+
+
+
+            # OLD VERSION -----
+
             # catch sql-query/sqlq to get quotes through
-            if [ "$2" == "sql-query" ] || [ "$2" == "sqlq" ]; then
-                docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush sqlq \"${@:3}\""
-            else
+            #if [ "$2" == "sql-query" ] || [ "$2" == "sqlq" ]; then
+            #    docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush sqlq \"${@:3}\""
+            #else
                 # otherwise just do the old way for now
-                docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush ${*:2}"
-            fi
+                #docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush ${*:2}"
+            #fi
+
+
             exit
             ;;
 
@@ -265,7 +298,36 @@ if [ "$1" != "" ]; then
                 echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot wp' command."
                 echo "" && exit
             fi
-            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && wp ${*:2}"
+
+            # build string
+            command="wp"
+            # check all arguments after wp
+            for i in "${@:2}"
+            do
+                # if there are spaces, the argument was quoted at cli
+                if [ `echo $i | grep \ | wc -l` == "1" ]; then
+                    # see if that argument contains double quotes (ie. singles were used)
+                    if [ `echo $i | grep -c '"'` == "0" ]; then
+                        # add double quotes if no double quotes contained in argument
+                        command+=" \"$i\""
+                    else
+                        # add single quotes if there were double quotes
+                        command+=" '$i'"
+                    fi
+                else
+                    # if no spaces just add to the string
+                    command+=" $i"
+                fi
+            done
+
+            #echo "cd ${determine_project} && ${command}"
+
+            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
+
+
+            # OLD VERSION -----
+            #docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && wp ${*:2}"
+            
             exit
             ;;
 
