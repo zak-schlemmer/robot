@@ -38,7 +38,7 @@ fi
 echo ""
 echo "Please pick a base template to use:" && echo ""
 echo "       ( 1 ) drupal 7.54      <-  a vanilla d7 install in 2 containers apache2/mysql"
-echo "       ( 2 ) drupal 8.3.0     <-  a vanilla d8 install in 2 containers apache2/mysql"
+echo "       ( 2 ) drupal 8.3.1     <-  a vanilla d8 install in 2 containers apache2/mysql"
 echo "       ( 3 ) wordpress        <-  a vanilla wordpress install in 2 containers apache2/mysql"
 echo ""
 echo -n "Numbered Choice: "
