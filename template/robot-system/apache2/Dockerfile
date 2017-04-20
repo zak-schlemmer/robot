@@ -65,7 +65,9 @@ RUN echo "export TERM=xterm" >> /home/robot/.bashrc
 RUN echo "cd /template" >> /home/robot/.bashrc
 
 # sendmail path
-RUN sed -i -e 's#;sendmail_path =#sendmail_path = \"\/opt\/go\/bin\/mhsendmail --smtp-addr=mailhog:1025\"#g' /etc/php5/apache2/php.ini
+RUN sed -i -e 's#;sendmail_path =#sendmail_path = \"\/opt\/go\/bin\/mhsendmail --smtp-addr=mailhog:1025\"#g' \
+    /etc/php5/apache2/php.ini \
+    /etc/php5/cli/php.ini
 
 # blackfire
 RUN wget -O - https://packagecloud.io/gpg.key | apt-key add -
