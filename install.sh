@@ -40,6 +40,8 @@ if [ $os == "Darwin" ]; then
     # create this loop back as that will now be needed
     sudo ifconfig lo0 alias 10.254.254.254 > /dev/null 2>&1
     sudo cp -f /etc/robot/src/robot.plist /Library/LaunchDaemons/ > /dev/null 2>&1
+    # make it so docker-sync can update
+    sudo chmod -R 2777 /Library/Ruby/Gems
 fi
 
 

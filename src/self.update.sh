@@ -35,6 +35,13 @@ else
 		git pull > /dev/null 2>&1
 		# replace the bin command
 		cp -f /etc/robot/src/robot.sh /usr/local/bin/robot
+
+		# get the halfway fix for docker-sync update in
+		if [ `uname -s` == "Darwin" ]; then
+		    # make it so docker-sync can update
+            sudo chmod -R 2777 /Library/Ruby/Gems
+		fi
+
 		# instill happy thoughts
 		echo "Your robot has been updated! Enjoy!" && echo ""
 	fi
