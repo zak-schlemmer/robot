@@ -36,19 +36,25 @@ case $2 in
 
     # restart the auto sync for your location
     restart )
-        docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}"
+        cd /etc/robot/projects/$project_folder/$project/docker-sync/
+        docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}"
         sleep 2
-        docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" --daemon
+        docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
+        cd -
         ;;
 
     # stop the auto sync for your location
     stop )
-        docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}"
+        cd /etc/robot/projects/$project_folder/$project/docker-sync/
+        docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}"
+        cd -
         ;;
 
     # start the auto sync for your location
     start )
-        docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" --daemon
+        cd /etc/robot/projects/$project_folder/$project/docker-sync/
+        docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
+        cd -
         ;;
 
     # check if sync is running
@@ -57,10 +63,12 @@ case $2 in
         if [ `docker ps | grep -i "${subproject}"-rsync | grep -c -i "restart"` == "1" ]; then
             echo "" && echo "You sync container for this project seems messed up."
             echo "I'm going to go ahead and fix that for you."
-            docker-sync stop -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" > /dev/null 2>&1
+            cd /etc/robot/projects/$project_folder/$project/docker-sync/
+            docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}" > /dev/null 2>&1
             docker-sync clean -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml > /dev/null 2>&1
             docker rm -f "${subproject}"-rsync > /dev/null 2>&1
-            docker-sync start -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml --dir ~/robot.dev/docker-sync/"${subproject}" --daemon
+            docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
+            cd -
             echo "" && echo "docker-sync for this project should be fixed." && echo ""
         else
         # show status
