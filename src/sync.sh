@@ -92,7 +92,6 @@ case $2 in
         if [ `docker exec "${subproject}"_web_1 bash -c "cd /$subproject && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
             echo "The test sync was: SUCCESSFUL." && echo ""
             rm ~/robot.dev/$subproject/sync-test-file.txt
-            docker exec "${subproject}"_web_1 bash -c "rm /$subproject/sync-test-file.txt"
             echo "I have removed the test files for you." && echo ""
         else
             rm ~/robot.dev/$subproject/sync-test-file.txt
