@@ -10,7 +10,7 @@ networks:
 
 # docker-sync volume
 volumes:
-  template-rsync:
+  template-sync:
     external: true
 
 
@@ -46,7 +46,7 @@ services:
       dockerfile: "./projects/custom/template/apache2/Dockerfile"
     restart: always
     volumes:
-      - template-rsync:/template:rw
+      - template-sync:/template:rw
     links:
       - template-db
     command: apache2ctl -D FOREGROUND

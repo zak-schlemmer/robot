@@ -134,7 +134,7 @@ sed -i -e "s/template/${project_name}/g" \
     $project_path/apache2/Dockerfile \
     $project_path/mysql/Dockerfile \
     $project_path/apache2/template.apache2.vhost.conf \
-    $project_path/docker-sync/docker-compose.yml \
+    $project_path/docker-sync/docker-sync.yml \
     $project_path/osx-docker-compose.yml
 # project specific file names
 mv $project_path/apache2/template.apache2.ports.conf $project_path/apache2/$project_name.apache2.ports.conf
@@ -159,13 +159,6 @@ for ((i=3301;i<=3401;i++)); do
         break
     fi
 done
-# find next available docker-sync port
-for ((i=10801;i<=10901;i++)); do
-    if [ `cat /etc/robot/projects/*/*/docker-sync/docker-compose.yml | grep "sync_host_port" | tr -d 'sync_host_port: ' | grep -c $i` == "0" ]; then
-        docker_sync_port=$i
-        break
-    fi
-done
 # find next available IP
 for ((i=2;i<=254;i++)); do
     if [ `grep -rh "ipv4_address: 172.72.72" /etc/robot/projects/*/*/docker-compose.yml | sed  's/        ipv4_address: //' | grep -c "172.72.72.${i}"` == "0" ]; then
@@ -181,8 +174,6 @@ sed -i -e "s/9999/${mysql_port}/g" $project_path/mysql/default.my.cnf \
     $project_path/$project_name.install.sh \
     $project_path/docker-compose.yml \
     $project_path/osx-docker-compose.yml
-# set docker-sync port
-sed -i -e "s/10800/${docker_sync_port}/g" $project_path/docker-sync/docker-compose.yml
 # set ip
 sed -i -e "s/333/${next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
 apache2_next_ip=$((next_ip+1))

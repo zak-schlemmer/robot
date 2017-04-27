@@ -27,7 +27,6 @@
 #       apache2 port:           81
 #       mysql port:             3301
 #       ip /24:                 .2
-#       docker-sync port:       10801
 
 # I just switched apache ports to the format: 8081
 # I then added 100 to the other values
