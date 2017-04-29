@@ -18,11 +18,14 @@ else
 fi
 
 # check for duplicate project name
-if [ `ls -p /etc/robot/projects/* | grep / | grep -v : | grep -c "${project_name}/"` != "0" ]; then
-    echo "" && echo "A project named $project_name appears to already exist."
-    echo "" && echo "Please either remove the existing project by that name, or choose another name."
-    echo "" && exit
-fi
+for existing in `ls -p /etc/robot/projects/* | grep / | grep -v :| tr '\n' ' '`
+do
+    if [ "${existing}" == "${project_name}/" ]; then
+        echo "" && echo "A project named $project_name appears to already exist."
+        echo "" && echo "Please either remove the existing project by that name, or choose another name."
+        echo "" && exit
+    fi
+done
 
 # check for underscore character and tell them stuff
 if ! [ `echo $project_name | grep -c "_"` == "0" ]; then
