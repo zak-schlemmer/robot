@@ -75,7 +75,7 @@ if [ "$1" != "" ]; then
             # MAILHOG
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ]; then
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml build
-                docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml up -d  | grep -vi warning
+                docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml up -d
             fi
             # EVERYTHING ELSE
             for project in "${project_list[@]}"
@@ -117,10 +117,10 @@ if [ "$1" != "" ]; then
                         if [[ "${arg}" == "${project}" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
                             if [ `uname -s` == "Darwin" ]; then
                                 docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml build
-                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml up -d  | grep -vi warning
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml up -d
                             else
                                 docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml build
-                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml up -d  | grep -vi warning
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml up -d
                             fi
                         fi
                     done
@@ -213,7 +213,7 @@ if [ "$1" != "" ]; then
             available_projects
             # MAILHOG
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
-                docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml rm -fa
+                docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml rm -f
             fi
             # EVERYTHING ELSE
             for project in "${project_list[@]}"
@@ -227,9 +227,9 @@ if [ "$1" != "" ]; then
                     do
                         if [[ "${arg}" == "${project}" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
                             if [ `uname -s` == "Darwin" ]; then
-                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml rm -fa
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml rm -f
                             else
-                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml rm -fa
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml rm -f
                             fi
                         fi
                     done
@@ -237,7 +237,7 @@ if [ "$1" != "" ]; then
             done
             # NGINX
             if [ "$2" == "all" ]; then
-                docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml rm -fa
+                docker-compose -p robot -f /etc/robot/projects/robot-system/robot-nginx/docker-compose.yml rm -f
             fi
             ;;
 
