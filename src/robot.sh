@@ -82,11 +82,13 @@ if [ "$1" != "" ]; then
             do
                 # determine that projects containing folder
                 project_folder=`ls -d /etc/robot/projects/*/* | grep $project | head -1 | sed 's/.*projects\///' | sed "s/\/.*//"`
-
+                for arg in `echo ${*:2}`
+                do
                 # build if not mailhog
-                if [ `echo ${*:2}| grep -c "${project}"` == "1" ] && [ ! $project == "mailhog" ]; then
-                    . /etc/robot/projects/$project_folder/$project/$project.install.sh $project
-                fi
+                    if [[ "${arg}" == "${project}" ]] && [[ ! $project == "mailhog" ]]; then
+                        . /etc/robot/projects/$project_folder/$project/$project.install.sh $project
+                    fi
+                done
             done
             ;;
 
