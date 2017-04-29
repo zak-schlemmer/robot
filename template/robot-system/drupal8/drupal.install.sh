@@ -27,11 +27,8 @@ if [ "$OS" == "Darwin" ]; then
     echo "Getting docker-sync ready. Just a moment." && echo ""
     cd /etc/robot/projects/custom/$1/docker-sync/
     docker-sync-daemon start --dir ~/robot.dev/docker-sync/$1
-    docker-sync-daemon stop --dir ~/robot.dev/docker-sync/$1
-    docker-sync clean -c /etc/robot/projects/custom/$1/docker-sync/docker-sync.yml
-    docker-sync-daemon start --dir ~/robot.dev/docker-sync/$1
     docker update --restart=always $1-sync
-    cd -
+    cd - > /dev/null 2>&1
     # docker-compose build / up
     docker-compose -p robot -f /etc/robot/projects/custom/$1/osx-docker-compose.yml build
     docker-compose -p robot -f /etc/robot/projects/custom/$1/osx-docker-compose.yml up -d
@@ -64,11 +61,6 @@ docker exec -t $1_web_1 bash -c "cd /$1 && drush cr"
 # fix permissions
 docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php"
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
-
-# copy container back if osx
-if [ "$OS" == "Darwin" ]; then
-    docker cp $1_web_1:/$1 ~/robot.dev/
-fi
 
 # everything done
 echo "" && echo "$1 - Finished" && echo ""
