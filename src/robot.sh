@@ -68,24 +68,20 @@ if [ "$1" != "" ]; then
 
         # this will build all arguments provided to it
         build )
-
             # make projects list
             available_projects
-
             . /etc/robot/src/dependancies.sh
             nginx_check
-
             # MAILHOG
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ]; then
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml build
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml up -d  | grep -vi warning
             fi
-
-            # GOOD DYNAMIC PROJECT ACTION
+            # EVERYTHING ELSE
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | head -1 | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # build if not mailhog
                 if [ `echo ${*:2}| grep -c "${project}"` == "1" ] && [ ! $project == "mailhog" ]; then
@@ -96,12 +92,9 @@ if [ "$1" != "" ]; then
 
         # this will rebuild containers for arguments provided
         rebuild )
-
             nginx_check
-
             # make projects list
             available_projects
-
             # MAILHOG
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ]; then
                 . /etc/robot/src/dependancies.sh
@@ -109,53 +102,56 @@ if [ "$1" != "" ]; then
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml build
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml up -d  | grep -vi warning
             fi
-
-            # GOOD DYNAMIC PROJECT ACTION
+            # EVERYTHING ELSE
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | head -1 | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # rebuild if not mailhog
                 if [ ! $project == "mailhog" ] && [ ! $project == "robot-nginx" ]; then
-                    if [[ `echo ${*:2}| grep -c "${project}"` == "1" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
-                        if [ `uname -s` == "Darwin" ]; then
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml build
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml up -d  | grep -vi warning
-                        else
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml build
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml up -d  | grep -vi warning
+                    for arg in `echo ${*:2}`
+                    do
+                        if [[ "${arg}" == "${project}" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
+                            if [ `uname -s` == "Darwin" ]; then
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml build
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml up -d  | grep -vi warning
+                            else
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml build
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml up -d  | grep -vi warning
+                            fi
                         fi
-                    fi
+                    done
                 fi
             done
             ;;
 
 
         stop )
-
             # make projects list
             available_projects
-
             # MAILHOG
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
                     docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml stop
             fi
-            # GOOD DYNAMIC PROJECT ACTION
+            # EVERYTHING ELSE
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | head -1 | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # stop if not mailhog or robot-nginx
                 if [ ! $project == "robot-nginx" ] && [ ! $project == "mailhog" ]; then
-                    if [[ `echo ${*:2}| grep -c "${project}"` == "1" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
-                        if [ `uname -s` == "Darwin" ]; then
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml stop
-                        else
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml stop
+                    for arg in `echo ${*:2}`
+                    do
+                        if [[ "${arg}" == "${project}" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
+                            if [ `uname -s` == "Darwin" ]; then
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml stop
+                            else
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml stop
+                            fi
                         fi
-                    fi
+                    done
                 fi
             done
             # NGINX and DOCKER-SYNC
@@ -165,32 +161,31 @@ if [ "$1" != "" ]; then
             ;;
 
         start )
-
             # make projects list
             available_projects
-
             # MAILHOG
             if [[ `echo ${*:2}| grep -c "mailhog"` == 1 ]] || [[ "$2" == "all"  && `docker ps -a | grep -c mailhog` -gt 0 ]]; then
                 nginx_check
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml start
             fi
-            # GOOD DYNAMIC PROJECT ACTION
+            # EVERYTHING ELSE
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
-
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | head -1 | sed 's/.*projects\///' | sed "s/\/.*//"`
                 nginx_check
-
                 # start if not mailhog or robot-nginx
                 if [ ! $project == "robot-nginx" ] && [ ! $project == "mailhog" ]; then
-                    if [[ `echo ${*:2}| grep -c "${project}"` == "1" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
-                        if [ `uname -s` == "Darwin" ]; then
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml start
-                        else
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml start
+                    for arg in `echo ${*:2}`
+                    do
+                        if [[ "${arg}" == "${project}" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
+                            if [ `uname -s` == "Darwin" ]; then
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml start
+                            else
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml start
+                            fi
                         fi
-                    fi
+                    done
                 fi
             done
             exit
@@ -212,29 +207,30 @@ if [ "$1" != "" ]; then
             ;;
 
         rm )
-
             # make projects list
             available_projects
-
             # MAILHOG
             if [ `echo ${*:2}| grep -c "mailhog"` == 1 ] || [ "$2" == "all" ]; then
                 docker-compose -p robot -f /etc/robot/projects/robot-system/mailhog/docker-compose.yml rm -fa
             fi
-            # GOOD DYNAMIC PROJECT ACTION
+            # EVERYTHING ELSE
             for project in "${project_list[@]}"
             do
                 # determine that projects containing folder
-                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | sed 's/.*projects\///' | sed "s/\/.*//"`
+                project_folder=`ls -d /etc/robot/projects/*/* | grep $project | head -1 | sed 's/.*projects\///' | sed "s/\/.*//"`
 
                 # rm if not mailhog or robot-nginx
                 if [ ! $project == "robot-nginx" ] && [ ! $project == "mailhog" ]; then
-                    if [[ `echo ${*:2}| grep -c "${project}"` == "1" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
-                        if [ `uname -s` == "Darwin" ]; then
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/osx-docker-compose.yml rm -fa
-                        else
-                            docker-compose -p robot -f /etc/robot/projects/$project_folder/$project/docker-compose.yml rm -fa
+                    for arg in `echo ${*:2}`
+                    do
+                        if [[ "${arg}" == "${project}" ]] || [[ "$2" == "all" && `docker ps -a | grep -c "${project}"` -gt 0 ]]; then
+                            if [ `uname -s` == "Darwin" ]; then
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/osx-docker-compose.yml rm -fa
+                            else
+                                docker-compose -p robot -f /etc/robot/projects/"${project_folder}"/"${project}"/docker-compose.yml rm -fa
+                            fi
                         fi
-                    fi
+                    done
                 fi
             done
             # NGINX
@@ -244,13 +240,11 @@ if [ "$1" != "" ]; then
             ;;
 
         drush )
-
             # check pwd
             if [ `pwd_robot_project` == "0" ]; then
                 echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot drush' command."
                 echo "" && exit
             fi
-
             # build string
             command="drush"
             # check all arguments after drush
@@ -271,24 +265,7 @@ if [ "$1" != "" ]; then
                     command+=" $i"
                 fi
             done
-
-            #echo "cd ${determine_project} && ${command}"
-
             docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
-
-
-
-            # OLD VERSION -----
-
-            # catch sql-query/sqlq to get quotes through
-            #if [ "$2" == "sql-query" ] || [ "$2" == "sqlq" ]; then
-            #    docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush sqlq \"${@:3}\""
-            #else
-                # otherwise just do the old way for now
-                #docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && drush ${*:2}"
-            #fi
-
-
             exit
             ;;
 
@@ -298,7 +275,6 @@ if [ "$1" != "" ]; then
                 echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot wp' command."
                 echo "" && exit
             fi
-
             # build string
             command="wp"
             # check all arguments after wp
@@ -319,15 +295,7 @@ if [ "$1" != "" ]; then
                     command+=" $i"
                 fi
             done
-
-            #echo "cd ${determine_project} && ${command}"
-
             docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
-
-
-            # OLD VERSION -----
-            #docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && wp ${*:2}"
-            
             exit
             ;;
 
