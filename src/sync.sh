@@ -40,21 +40,21 @@ case $2 in
         docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}"
         sleep 2
         docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
-        cd -
+        cd - > /dev/null 2>&1
         ;;
 
     # stop the auto sync for your location
     stop )
         cd /etc/robot/projects/$project_folder/$project/docker-sync/
         docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}"
-        cd -
+        cd - > /dev/null 2>&1
         ;;
 
     # start the auto sync for your location
     start )
         cd /etc/robot/projects/$project_folder/$project/docker-sync/
         docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
-        cd -
+        cd - > /dev/null 2>&1
         ;;
 
     # check if sync is running
@@ -68,7 +68,7 @@ case $2 in
             docker-sync clean -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml > /dev/null 2>&1
             docker rm -f "${subproject}"-sync > /dev/null 2>&1
             docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
-            cd -
+            cd - > /dev/null 2>&1
             echo "" && echo "docker-sync for this project should be fixed." && echo ""
         else
         # show status
@@ -92,7 +92,7 @@ case $2 in
         if [ `docker exec "${subproject}"_web_1 bash -c "cd /$subproject && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
             echo "The test sync was: SUCCESSFUL." && echo ""
             rm ~/robot.dev/$subproject/sync-test-file.txt
-            echo "I have removed the test files for you." && echo ""
+            echo "I have removed the test file for you." && echo ""
         else
             rm ~/robot.dev/$subproject/sync-test-file.txt
             echo "The test sync: FAILED." && echo ""
