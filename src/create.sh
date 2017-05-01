@@ -7,15 +7,35 @@
 ###################################
 
 
-# check if a name was provided
-if [ "$1" == "" ]; then
-    # take in a project name
-    echo "" && echo "What would you like to use as a project name?"
-    echo "" && echo -n "(You will want to keep it short and simple): "
-    read project_name && echo ""
+# check if --dir arg provided
+if [ "$1" == "--dir" ]; then
+    if [ "$2" == "" ]; then
+        echo "" && echo "When using '--dir' please provide the existing directory in the form:"
+        echo "" && echo "robot create --dir /path/to/my/existing/project"
+        echo "" && exit
+    fi
+    # extract the project directory from the path
+    remove=`dirname ${2%/}`
+    target=`echo ${2%/} | sed "s@${remove}/@@g"`
+
+    # temp (for testing) echo out the extracted target dir
+    echo $target
+
+    # exit for now
+    exit
+
 else
-    project_name="$1"
+    # check if a name was provided
+    if [ "$1" == "" ]; then
+        # take in a project name
+        echo "" && echo "What would you like to use as a project name?"
+        echo "" && echo -n "(You will want to keep it short and simple): "
+        read project_name && echo ""
+    else
+        project_name="$1"
+    fi
 fi
+
 
 # check for duplicate project name
 for existing in `ls -p /etc/robot/projects/* | grep / | grep -v :| tr '\n' ' '`
