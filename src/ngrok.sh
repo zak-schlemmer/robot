@@ -7,8 +7,13 @@
 ###################################
 
 
-# determine project (breaking it down this for purpose of vhost file names)
-project=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
+# find project
+if [ `pwd | grep -c "robot.dev"` == "0" ]; then
+    remove=`pwd | xargs dirname`
+    project=`pwd | sed "s@${remove}/@@g"`
+else
+    project=`pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/"`
+fi
 
 # prompt user for alias
 echo ""

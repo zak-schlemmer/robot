@@ -10,10 +10,14 @@
 # include help functions
 . /etc/robot/src/help.functions.sh
 
-# based on navigation
-subproject=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
+# find project
+if [ `pwd | grep -c "robot.dev"` == "0" ]; then
+    remove=`pwd | xargs dirname`
+    subproject=`pwd | sed "s@${remove}/@@g"`
+else
+    subproject=`pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/"`
+fi
 
-# !!!! TO DO : DOCUMENT THIS SOMEWHERE !!!!!
 # remove any sub-project stuff
 project=`echo $subproject | cut -f1 -d"_"`
 
