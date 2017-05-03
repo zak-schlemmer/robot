@@ -44,7 +44,8 @@ function available_projects
 function determine_project
 {
     if [ `pwd | grep -c "robot.dev"` == "0" ]; then
-        echo "bla bla"
+        remove=`pwd | xargs dirname`
+        echo $(pwd | sed "s@${remove}/@@g")
     else
         echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")
     fi
@@ -274,7 +275,7 @@ if [ "$1" != "" ]; then
                     command+=" $i"
                 fi
             done
-            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
+            docker exec -u robot -i `determine_project`_web_1 bash -c "cd `determine_project` && ${command}"
             exit
             ;;
 
@@ -304,7 +305,7 @@ if [ "$1" != "" ]; then
                     command+=" $i"
                 fi
             done
-            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
+            docker exec -u robot -i `determine_project`_web_1 bash -c "cd `determine_project` && ${command}"
             exit
             ;;
 
@@ -316,7 +317,7 @@ if [ "$1" != "" ]; then
                 #    echo "" && exit
                 #fi
                 # if web head for project files use robot user
-                docker exec -u robot -it "${determine_project}"_web_1 bash
+                docker exec -u robot -it `determine_project`_web_1 bash
             else
                 # otherwise root if container specified
                 docker exec -it "$2" bash
@@ -339,8 +340,8 @@ if [ "$1" != "" ]; then
                 #fi
                 # print various status info
                 echo ""
-                echo "I see `docker ps | grep -c ${determine_project}_` containers running for this project." && echo ""
-                echo "`docker ps | grep ${determine_project}_ | grep -ic restart` of them are restarting." && echo ""
+                echo "I see `docker ps | grep -c \`determine_project\`` containers running for this project." && echo ""
+                echo "`docker ps | grep \`determine_project\`_ | grep -ic restart` of them are restarting." && echo ""
                 echo "Run 'robot list' to see more information" && echo ""
             fi
             exit
@@ -400,6 +401,7 @@ if [ "$1" != "" ]; then
             #fi
             # make a 'file name friendly' date/time stamp
             datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
+            temp_project=`determine_project`
             # switch out for import / export
             case $2 in
                 import )
@@ -408,18 +410,18 @@ if [ "$1" != "" ]; then
                         echo "robot db import <good-dump-file>.sql"
                         exit
                     fi
-                    docker cp ./"${3}" "${determine_project}"_db_1:/
-                    docker exec -t "${determine_project}"_db_1 bash -c "mysql ${determine_project} < ${3}"
+                    docker cp ./"${3}" "${temp_project}"_db_1:/
+                    docker exec -t "${temp_project}"_db_1 bash -c "mysql ${temp_project} < ${3}"
                     exit
                     ;;
                 export )
-                    docker exec -t	"${determine_project}"_db_1 bash -c "mysqldump ${determine_project} > ${determine_project}.'${datestamp}'.sql"
-                    docker cp "${determine_project}"_db_1:/"${determine_project}"."${datestamp}".sql ./
+                    docker exec -t	"${temp_project}"_db_1 bash -c "mysqldump ${temp_project} > ${temp_project}.'${datestamp}'.sql"
+                    docker cp "${temp_project}"_db_1:/"${temp_project}"."${datestamp}".sql ./
                     exit
                     ;;
                 drop )
-                    docker exec -t "${determine_project}"_db_1 bash -c "mysql -e 'drop database ${determine_project}'"
-                    docker exec -t "${determine_project}"_db_1 bash -c "mysql -e 'create database ${determine_project}'"
+                    docker exec -t "${temp_project}"_db_1 bash -c "mysql -e 'drop database ${temp_project}'"
+                    docker exec -t "${temp_project}"_db_1 bash -c "mysql -e 'create database ${temp_project}'"
                     exit
                     ;;
                 # prints 'robot db' help text
