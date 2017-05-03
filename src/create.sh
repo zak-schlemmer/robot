@@ -19,10 +19,10 @@ if [ "$1" == "--dir" ]; then
     target=`echo ${2%/} | sed "s@${remove}/@@g"`
 
     # temp (for testing) echo out the extracted target dir
-    echo $target
+    #echo $target
 
     # exit for now
-    exit
+    #exit
 
 else
     # check if a name was provided
@@ -60,9 +60,10 @@ fi
 # some sort of option of the template to use
 echo ""
 echo "Please pick a base template to use:" && echo ""
-echo "       ( 1 ) drupal 7.54      <-  a vanilla d7 install in 2 containers apache2/mysql"
-echo "       ( 2 ) drupal 8.3.1     <-  a vanilla d8 install in 2 containers apache2/mysql"
-echo "       ( 3 ) wordpress        <-  a vanilla wordpress install in 2 containers apache2/mysql"
+echo "       ( 0 ) Empty                 2 container (web/db)"
+echo "       ( 1 ) drupal 7.54           2 container (web/db)"
+echo "       ( 2 ) drupal 8.3.1          2 container (web/db)"
+echo "       ( 3 ) wordpress             2 container (web/db)"
 echo ""
 echo -n "Numbered Choice: "
 read template_select_option && echo ""
@@ -85,6 +86,25 @@ mkdir -p $project_path
 # create project from template
 case $template_select_option in
 
+
+    #####################
+    # empty 2 container #
+    #####################
+    0 )
+        # copy everything from templates
+        cp -rf /etc/robot/template/robot-system/empty-2-container/* $project_path/
+        # check user php selection
+        case $php_select_option in
+            1 )
+                # php5.6
+                cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+                ;;
+            2 )
+                # php7.0
+                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                ;;
+            esac
+        ;;
 
     ###############
     # drupal 7.54 #
@@ -163,7 +183,9 @@ sed -i -e "s/template/${project_name}/g" \
 mv $project_path/apache2/template.apache2.ports.conf $project_path/apache2/$project_name.apache2.ports.conf
 mv $project_path/apache2/template.apache2.vhost.conf $project_path/apache2/$project_name.apache2.vhost.conf
 # install per project type
-if [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
+if [ $template_select_option == 0 ]; then
+    mv $project_path/empty.install.sh $project_path/$project_name.install.sh
+elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
     mv $project_path/drupal.install.sh $project_path/$project_name.install.sh
 elif [ $template_select_option == 3 ]; then
     mv $project_path/wordpress.install.sh $project_path/$project_name.install.sh
