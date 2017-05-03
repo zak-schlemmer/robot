@@ -16,13 +16,7 @@ if [ "$1" == "--dir" ]; then
     fi
     # extract the project directory from the path
     remove=`dirname ${2%/}`
-    target=`echo ${2%/} | sed "s@${remove}/@@g"`
-
-    # temp (for testing) echo out the extracted target dir
-    #echo $target
-
-    # exit for now
-    #exit
+    project_name=`echo ${2%/} | sed "s@${remove}/@@g"`
 
 else
     # check if a name was provided
@@ -190,6 +184,19 @@ elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
 elif [ $template_select_option == 3 ]; then
     mv $project_path/wordpress.install.sh $project_path/$project_name.install.sh
 fi
+
+# set custom file location
+if [ "$1" == "--dir" ]; then
+    sed -i -e "s@~/robot.dev@$remove@g" \
+        $project_path/docker-compose.yml \
+        $project_path/apache2/Dockerfile \
+        $project_path/docker-sync/docker-sync.yml \
+        $project_path/osx-docker-compose.yml \
+        $project_path/apache2/$project_name.apache2.ports.conf \
+        $project_path/apache2/$project_name.apache2.vhost.conf \
+        $project_path/$project_name.install.sh
+fi
+
 # find next available apache2 port
 for ((i=81;i<=181;i++)); do
     if [ `cat /etc/robot/projects/*/*/apache2/*.apache2.ports.conf | grep Listen | tr -d 'Listen ' | grep -c $i` == "0" ]; then
