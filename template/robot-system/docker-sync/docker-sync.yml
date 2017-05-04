@@ -4,7 +4,6 @@ options:
 syncs:
   template-sync:
     src: '~/robot.dev/template/'
-    dest: '/template'
     sync_userid: '1000'
     sync_prefer: 'default'
     watch_excludes: ['.*/.git', '.idea', '.gitignore', '.swp']
