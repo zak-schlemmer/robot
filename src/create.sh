@@ -50,17 +50,21 @@ if ! [ `echo $project_name | grep -c "_"` == "0" ]; then
     exit
 fi
 
-
-# some sort of option of the template to use
-echo ""
-echo "Please pick a base template to use:" && echo ""
-echo "       ( 0 ) Empty                 2 container (web/db)"
-echo "       ( 1 ) drupal 7.54           2 container (web/db)"
-echo "       ( 2 ) drupal 8.3.1          2 container (web/db)"
-echo "       ( 3 ) wordpress             2 container (web/db)"
-echo ""
-echo -n "Numbered Choice: "
-read template_select_option && echo ""
+# when using --dir flag, default to "Empty" (for now)
+if [ "$1" == "--dir" ]; then
+    template_select_option="0"
+else
+    # some sort of option of the template to use
+    echo ""
+    echo "Please pick a base template to use:" && echo ""
+    echo "       ( 0 ) Empty                 2 container (web/db)"
+    echo "       ( 1 ) drupal 7.54           2 container (web/db)"
+    echo "       ( 2 ) drupal 8.3.1          2 container (web/db)"
+    echo "       ( 3 ) wordpress             2 container (web/db)"
+    echo ""
+    echo -n "Numbered Choice: "
+    read template_select_option && echo ""
+fi
 
 # select php 5.6 or 7
 echo ""
@@ -71,6 +75,19 @@ echo ""
 echo -n "Numbered Choice: "
 read php_select_option && echo ""
 
+# when using --dir flag, offer to include a db dump in build
+if [ "$1" == "--dir" ]; then
+    echo ""
+    echo "Would you like to include a database dump file in the build?"
+    echo -n "Enter 'y' or 'n': "
+    read use_db_dump && echo ""
+fi
+if [ "$use_db_dump" == "y" ]; then
+    echo ""
+    echo "Please enter the the path to the database dump file to include in the build."
+    echo -n "Path to file: "
+    read db_file_path && echo ""
+fi
 
 # make all the things for the new project, using the name provided
 project_path=/etc/robot/projects/custom/$project_name
@@ -187,6 +204,10 @@ fi
 
 # set custom file location
 if [ "$1" == "--dir" ]; then
+    if [ "$use_db_dump" == "y" ]; then
+        cp $db_file_path $project_path/mysql/${project_name}.sql
+        sed -i -e "s@#remove me#@@g" $project_path/$project_name.install.sh
+    fi
     sed -i -e "s@~/robot.dev@$remove@g" \
         $project_path/docker-compose.yml \
         $project_path/apache2/Dockerfile \
