@@ -86,7 +86,7 @@ if [ "$use_db_dump" == "y" ]; then
     echo ""
     echo "Please enter the the path to the database dump file to include in the build."
     echo -n "Path to file: "
-    read db_file_path && echo ""
+    read -e db_file_path && echo ""
 fi
 
 # make all the things for the new project, using the name provided
@@ -205,7 +205,8 @@ fi
 # set custom file location
 if [ "$1" == "--dir" ]; then
     if [ "$use_db_dump" == "y" ]; then
-        cp $db_file_path $project_path/mysql/${project_name}.sql
+        db_file_full_path=${db_file_path/\~/$HOME}
+        cp "${db_file_full_path}" $project_path/mysql/${project_name}.sql
         sed -i -e "s@#remove me#@@g" $project_path/$project_name.install.sh
     fi
     sed -i -e "s@~/robot.dev@$remove@g" \

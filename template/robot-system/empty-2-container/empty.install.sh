@@ -32,7 +32,7 @@ fi
 sleep 8
 
 # optional db dump
-#remove me#docker cp /etc/robot/projects/custom/$1/mysql/${1}.sql ${1}_db_1:/ && docker exec -t ${1}_db_1 bash -c "mysql -u ${1} -p${1} ${1} < ${1}.sql"
+#remove me#docker cp /etc/robot/projects/custom/$1/mysql/${1}.sql ${1}_db_1:/ && docker exec -t ${1}_db_1 bash -c "mysql -u ${1} -probot ${1} < ${1}.sql"
 
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
 
