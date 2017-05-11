@@ -43,12 +43,13 @@ function available_projects
 # determine project, output project name
 function determine_project
 {
-    if [ `pwd | grep -c "robot.dev"` == "0" ]; then
-        remove=`pwd | xargs dirname`
-        echo $(pwd | sed "s@${remove}/@@g")
-    else
-        echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")
-    fi
+    available_projects
+    for i in "${project_list[@]}"
+    do
+        if [ `pwd | grep -c "/${i}"` == "1" ]; then
+            echo $i
+        fi
+    done
 }
 
 # check if a user is navigated to a robot project, return true or false in form: 1 or 0
