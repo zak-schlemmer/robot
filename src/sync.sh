@@ -11,12 +11,13 @@
 . /etc/robot/src/help.functions.sh
 
 # find project
-if [ `pwd | grep -c "robot.dev"` == "0" ]; then
-    remove=`pwd | xargs dirname`
-    subproject=`pwd | sed "s@${remove}/@@g"`
-else
-    subproject=`pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/"`
-fi
+project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
+for i in "${project_list[@]}"
+do
+    if [ `pwd | grep -c "/${i}"` == "1" ]; then
+        subproject=$i
+    fi
+done
 
 # remove any sub-project stuff
 project=`echo $subproject | cut -f1 -d"_"`

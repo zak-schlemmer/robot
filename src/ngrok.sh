@@ -8,12 +8,13 @@
 
 
 # find project
-if [ `pwd | grep -c "robot.dev"` == "0" ]; then
-    remove=`pwd | xargs dirname`
-    project=`pwd | sed "s@${remove}/@@g"`
-else
-    project=`pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/"`
-fi
+project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
+for i in "${project_list[@]}"
+do
+    if [ `pwd | grep -c "/${i}"` == "1" ]; then
+        project=$i
+    fi
+done
 
 # prompt user for alias
 echo ""
