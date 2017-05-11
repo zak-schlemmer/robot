@@ -31,12 +31,18 @@ else
 fi
 
 
-# check for duplicate project name
+# project name error catch
 for existing in `ls -p /etc/robot/projects/* | grep / | grep -v :| tr '\n' ' '`
 do
+    # check for duplicate project name
     if [ "${existing}" == "${project_name}/" ]; then
         echo "" && echo "A project named $project_name appears to already exist."
         echo "" && echo "Please either remove the existing project by that name, or choose another name."
+        echo "" && exit
+    fi
+    # check for unix user
+    if [ `whoami` == "${project_name}" ]; then
+        echo "" && echo "A project cannot currently use the same name as your unix user."
         echo "" && exit
     fi
 done
