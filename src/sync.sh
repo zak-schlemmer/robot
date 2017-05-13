@@ -102,7 +102,7 @@ case $2 in
         echo "" && echo "Checking sync now. One moment." && echo ""
         sleep 10
         # see if file exists
-        if [ `docker exec "${subproject}"_web_1 bash -c "cd /$subproject && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
+        if [ `docker exec "${subproject}"_web_1 bash -c "cd /${subproject} && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
             echo "The test sync was: SUCCESSFUL." && echo ""
             rm "${project_base}${subproject}"/sync-test-file.txt
             echo "I have removed the test file for you." && echo ""
