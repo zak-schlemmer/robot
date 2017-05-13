@@ -31,7 +31,7 @@ project=`echo $subproject | cut -f1 -d"_"`
 project_folder=`ls -d /etc/robot/projects/*/* | grep "${project}*" | sed 's/.*projects\///' | sed "s/\/.*//"`
 
 # determine project root
-project_base=`pwd | grep -o ".*${subproject}" | sed 's@${subproject}@@g'`
+project_base=`pwd | grep -o ".*${subproject}" | sed "s@$subproject@@g"`
 
 # arguments to 'robot sync'
 case $2 in
