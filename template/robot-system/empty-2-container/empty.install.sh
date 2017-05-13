@@ -2,7 +2,7 @@
 
 ###################################
 #       ROBOT DEVELOPMENT         #
-#        drupal7 install          #
+#         empty install           #
 #       by: Zak Schlemmer         #
 ###################################
 
