@@ -46,8 +46,14 @@ function determine_project
     available_projects
     for i in "${project_list[@]}"
     do
+        # find the project in question
         if [ `pwd | grep -c "/${i}"` == "1" ]; then
-            echo $i
+            # this is how it looks for multiple web head projects
+            if [ `pwd | grep -coE "${i}[^/]+"` == "0" ]; then
+                echo `pwd | grep -oE "${i}"`
+            else
+                echo `pwd | grep -oE "${i}[^/]+"`
+            fi
         fi
     done
 }
