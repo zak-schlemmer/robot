@@ -10,10 +10,20 @@
 # include help functions
 . /etc/robot/src/help.functions.sh
 
-# based on navigation
-subproject=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
+# find project
+project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
+for i in "${project_list[@]}"
+do
+    if [ `pwd | grep -c "/${i}"` == "1" ]; then
+        # this is how it looks for multiple web head projects
+        if [ `pwd | grep -coE "${i}[^/]+"` == "0" ]; then
+            subproject=`pwd | grep -oE "${i}"`
+        else
+            subproject=`pwd | grep -oE "${i}[^/]+"`
+        fi
+    fi
+done
 
-# !!!! TO DO : DOCUMENT THIS SOMEWHERE !!!!!
 # remove any sub-project stuff
 project=`echo $subproject | cut -f1 -d"_"`
 

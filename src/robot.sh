@@ -41,7 +41,22 @@ function available_projects
 }
 
 # determine project, output project name
-determine_project=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
+function determine_project
+{
+    available_projects
+    for i in "${project_list[@]}"
+    do
+        # find the project in question
+        if [ `pwd | grep -c "/${i}"` == "1" ]; then
+            # this is how it looks for multiple web head projects
+            if [ `pwd | grep -coE "${i}[^/]+"` == "0" ]; then
+                echo `pwd | grep -oE "${i}"`
+            else
+                echo `pwd | grep -oE "${i}[^/]+"`
+            fi
+        fi
+    done
+}
 
 # check if a user is navigated to a robot project, return true or false in form: 1 or 0
 function pwd_robot_project
@@ -62,7 +77,7 @@ if [ "$1" != "" ]; then
         create )
 
             # run the create subscript as source
-            . /etc/robot/src/create.sh "$2"
+            . /etc/robot/src/create.sh "${@:2}"
             ;;
 
 
@@ -243,10 +258,10 @@ if [ "$1" != "" ]; then
 
         drush )
             # check pwd
-            if [ `pwd_robot_project` == "0" ]; then
-                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot drush' command."
-                echo "" && exit
-            fi
+            #if [ `pwd_robot_project` == "0" ]; then
+            #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot drush' command."
+            #    echo "" && exit
+            #fi
             # build string
             command="drush"
             # check all arguments after drush
@@ -267,16 +282,16 @@ if [ "$1" != "" ]; then
                     command+=" $i"
                 fi
             done
-            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
+            docker exec -u robot -i `determine_project`_web_1 bash -c "cd `determine_project` && ${command}"
             exit
             ;;
 
         wp )
             # check pwd
-            if [ `pwd_robot_project` == "0" ]; then
-                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot wp' command."
-                echo "" && exit
-            fi
+            #if [ `pwd_robot_project` == "0" ]; then
+            #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot wp' command."
+            #    echo "" && exit
+            #fi
             # build string
             command="wp"
             # check all arguments after wp
@@ -297,19 +312,19 @@ if [ "$1" != "" ]; then
                     command+=" $i"
                 fi
             done
-            docker exec -u robot -i "${determine_project}"_web_1 bash -c "cd ${determine_project} && ${command}"
+            docker exec -u robot -i `determine_project`_web_1 bash -c "cd `determine_project` && ${command}"
             exit
             ;;
 
         ssh )
             if [ "$2" == "" ]; then
                 # check pwd
-                if [ `pwd_robot_project` == "0" ]; then
-                    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ssh' WITHOUT specifying a container name."
-                    echo "" && exit
-                fi
+                #if [ `pwd_robot_project` == "0" ]; then
+                #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ssh' WITHOUT specifying a container name."
+                #    echo "" && exit
+                #fi
                 # if web head for project files use robot user
-                docker exec -u robot -it "${determine_project}"_web_1 bash
+                docker exec -u robot -it `determine_project`_web_1 bash
             else
                 # otherwise root if container specified
                 docker exec -it "$2" bash
@@ -326,14 +341,14 @@ if [ "$1" != "" ]; then
         status )
             if [ "$2" == "" ]; then
                 # check pwd
-                if [ `pwd_robot_project` == "0" ]; then
-                    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot status'."
-                    echo "" && exit
-                fi
+                #if [ `pwd_robot_project` == "0" ]; then
+                #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot status'."
+                #    echo "" && exit
+                #fi
                 # print various status info
                 echo ""
-                echo "I see `docker ps | grep -c ${determine_project}_` containers running for this project." && echo ""
-                echo "`docker ps | grep ${determine_project}_ | grep -ic restart` of them are restarting." && echo ""
+                echo "I see `docker ps | grep -c \`determine_project\`` containers running for this project." && echo ""
+                echo "`docker ps | grep \`determine_project\`_ | grep -ic restart` of them are restarting." && echo ""
                 echo "Run 'robot list' to see more information" && echo ""
             fi
             exit
@@ -387,12 +402,13 @@ if [ "$1" != "" ]; then
 
         db )
             # check pwd
-            if [ `pwd_robot_project` == "0" ]; then
-                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot db' commands."
-                echo "" && exit
-            fi
+            #if [ `pwd_robot_project` == "0" ]; then
+            #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot db' commands."
+            #    echo "" && exit
+            #fi
             # make a 'file name friendly' date/time stamp
             datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
+            temp_project=`determine_project`
             # switch out for import / export
             case $2 in
                 import )
@@ -401,18 +417,18 @@ if [ "$1" != "" ]; then
                         echo "robot db import <good-dump-file>.sql"
                         exit
                     fi
-                    docker cp ./"${3}" "${determine_project}"_db_1:/
-                    docker exec -t "${determine_project}"_db_1 bash -c "mysql ${determine_project} < ${3}"
+                    docker cp ./"${3}" "${temp_project}"_db_1:/
+                    docker exec -t "${temp_project}"_db_1 bash -c "mysql ${temp_project} < ${3}"
                     exit
                     ;;
                 export )
-                    docker exec -t	"${determine_project}"_db_1 bash -c "mysqldump ${determine_project} > ${determine_project}.'${datestamp}'.sql"
-                    docker cp "${determine_project}"_db_1:/"${determine_project}"."${datestamp}".sql ./
+                    docker exec -t	"${temp_project}"_db_1 bash -c "mysqldump ${temp_project} > ${temp_project}.'${datestamp}'.sql"
+                    docker cp "${temp_project}"_db_1:/"${temp_project}"."${datestamp}".sql ./
                     exit
                     ;;
                 drop )
-                    docker exec -t "${determine_project}"_db_1 bash -c "mysql -e 'drop database ${determine_project}'"
-                    docker exec -t "${determine_project}"_db_1 bash -c "mysql -e 'create database ${determine_project}'"
+                    docker exec -t "${temp_project}"_db_1 bash -c "mysql -e 'drop database ${temp_project}'"
+                    docker exec -t "${temp_project}"_db_1 bash -c "mysql -e 'create database ${temp_project}'"
                     exit
                     ;;
                 # prints 'robot db' help text
@@ -440,10 +456,10 @@ if [ "$1" != "" ]; then
 
         sync )
             # check pwd
-            if [ `pwd_robot_project` == "0" ]; then
-                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot sync' commands."
-                echo "" && exit
-            fi
+            #if [ `pwd_robot_project` == "0" ]; then
+            #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot sync' commands."
+            #    echo "" && exit
+            #fi
             # clean sub-script
             /etc/robot/src/sync.sh ${*}
             exit
@@ -452,10 +468,10 @@ if [ "$1" != "" ]; then
 
         ngrok )
             # check pwd
-            if [ `pwd_robot_project` == "0" ]; then
-                echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ngrok'."
-                echo "" && exit
-            fi
+            #if [ `pwd_robot_project` == "0" ]; then
+            #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ngrok'."
+            #    echo "" && exit
+            #fi
             # makes the changes needed to use ngrok
             /etc/robot/src/ngrok.sh
             exit
