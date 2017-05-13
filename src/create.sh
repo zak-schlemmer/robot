@@ -95,6 +95,19 @@ if [ "$use_db_dump" == "y" ]; then
     read -e db_file_path && echo ""
 fi
 
+# when using --dir flag, offer drush or wp-cli addition
+if [ "$1" == "--dir" ]; then
+    echo ""
+    echo "Would you like any additional tools for this project?:" && echo ""
+    echo "       ( 0 ) none"
+    echo "       ( 1 ) drush            (drupal)"
+    echo "       ( 2 ) wp-cli           (wordpress)"
+    echo ""
+    echo -n "Numbered Choice: "
+    read tool_select_option && echo ""
+fi
+
+
 # make all the things for the new project, using the name provided
 project_path=/etc/robot/projects/custom/$project_name
 mkdir -p $project_path
@@ -210,11 +223,19 @@ fi
 
 # set custom file location
 if [ "$1" == "--dir" ]; then
+    # use db dump file in build
     if [ "$use_db_dump" == "y" ]; then
         db_file_full_path=${db_file_path/\~/$HOME}
         cp "${db_file_full_path}" $project_path/mysql/${project_name}.sql
         sed -i -e "s@#remove me#@@g" $project_path/$project_name.install.sh
     fi
+    # add extra tools
+    if [ "$tool_select_option" == "1" ]; then
+        sed -i -e "s@#remove me drush#@@g" $project_path/$project_name.install.sh
+    elif [ "$tool_select_option" == "2" ]; then
+        sed -i -e "s@#remove me wp#@@g" $project_path/$project_name.install.sh
+    fi
+    # do the rest of the replacements
     sed -i -e "s@~/robot.dev@$remove@g" \
         $project_path/docker-compose.yml \
         $project_path/apache2/Dockerfile \
