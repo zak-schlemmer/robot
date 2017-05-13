@@ -15,7 +15,12 @@ project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr
 for i in "${project_list[@]}"
 do
     if [ `pwd | grep -c "/${i}"` == "1" ]; then
-        subproject=$i
+        # this is how it looks for multiple web head projects
+        if [ `pwd | grep -coE "${i}[^/]+"` == "0" ]; then
+            subproject=`pwd | grep -oE "${i}"`
+        else
+            subproject=`pwd | grep -oE "${i}[^/]+"`
+        fi
     fi
 done
 
