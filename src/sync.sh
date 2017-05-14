@@ -112,6 +112,10 @@ case $2 in
             echo "Running 'robot sync status' can look for issues and attempt to fix them now." && echo ""
             echo "Maybe try that." && echo ""
         fi
+        # in case container file is not removed (happens sometimes, not sure why)
+        if [ `docker exec "${subproject}"_web_1 bash -c "cd /${subproject} && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
+            docker exec "${subproject}"_web_1 bash -c "rm /${subproject}/sync-test-file.txt"
+        fi
         ;;
 
     # prints 'robot clean' help text
