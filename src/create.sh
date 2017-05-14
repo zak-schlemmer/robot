@@ -7,22 +7,42 @@
 ###################################
 
 
-# check if a name was provided
-if [ "$1" == "" ]; then
-    # take in a project name
-    echo "" && echo "What would you like to use as a project name?"
-    echo "" && echo -n "(You will want to keep it short and simple): "
-    read project_name && echo ""
+# check if --dir arg provided
+if [ "$1" == "--dir" ]; then
+    if [ "$2" == "" ]; then
+        echo "" && echo "When using '--dir' please provide the existing directory in the form:"
+        echo "" && echo "robot create --dir /path/to/my/existing/project"
+        echo "" && exit
+    fi
+    # extract the project directory from the path
+    remove=`dirname ${2%/}`
+    project_name=`echo ${2%/} | sed "s@${remove}/@@g"`
+
 else
-    project_name="$1"
+    # check if a name was provided
+    if [ "$1" == "" ]; then
+        # take in a project name
+        echo "" && echo "What would you like to use as a project name?"
+        echo "" && echo -n "(You will want to keep it short and simple): "
+        read project_name && echo ""
+    else
+        project_name="$1"
+    fi
 fi
 
-# check for duplicate project name
+
+# project name error catch
 for existing in `ls -p /etc/robot/projects/* | grep / | grep -v :| tr '\n' ' '`
 do
+    # check for duplicate project name
     if [ "${existing}" == "${project_name}/" ]; then
         echo "" && echo "A project named $project_name appears to already exist."
         echo "" && echo "Please either remove the existing project by that name, or choose another name."
+        echo "" && exit
+    fi
+    # check for unix user
+    if [ `whoami` == "${project_name}" ]; then
+        echo "" && echo "A project cannot currently use the same name as your unix user."
         echo "" && exit
     fi
 done
@@ -36,16 +56,21 @@ if ! [ `echo $project_name | grep -c "_"` == "0" ]; then
     exit
 fi
 
-
-# some sort of option of the template to use
-echo ""
-echo "Please pick a base template to use:" && echo ""
-echo "       ( 1 ) drupal 7.54      <-  a vanilla d7 install in 2 containers apache2/mysql"
-echo "       ( 2 ) drupal 8.3.1     <-  a vanilla d8 install in 2 containers apache2/mysql"
-echo "       ( 3 ) wordpress        <-  a vanilla wordpress install in 2 containers apache2/mysql"
-echo ""
-echo -n "Numbered Choice: "
-read template_select_option && echo ""
+# when using --dir flag, default to "Empty" (for now)
+if [ "$1" == "--dir" ]; then
+    template_select_option="0"
+else
+    # some sort of option of the template to use
+    echo ""
+    echo "Please pick a base template to use:" && echo ""
+    echo "       ( 0 ) Empty                 2 container (web/db)"
+    echo "       ( 1 ) drupal 7.54           2 container (web/db)"
+    echo "       ( 2 ) drupal 8.3.1          2 container (web/db)"
+    echo "       ( 3 ) wordpress             2 container (web/db)"
+    echo ""
+    echo -n "Numbered Choice: "
+    read template_select_option && echo ""
+fi
 
 # select php 5.6 or 7
 echo ""
@@ -56,6 +81,32 @@ echo ""
 echo -n "Numbered Choice: "
 read php_select_option && echo ""
 
+# when using --dir flag, offer to include a db dump in build
+if [ "$1" == "--dir" ]; then
+    echo ""
+    echo "Would you like to include a database dump file in the build?"
+    echo -n "Enter 'y' or 'n': "
+    read use_db_dump && echo ""
+fi
+if [ "$use_db_dump" == "y" ]; then
+    echo ""
+    echo "Please enter the the path to the database dump file to include in the build."
+    echo -n "Path to file: "
+    read -e db_file_path && echo ""
+fi
+
+# when using --dir flag, offer drush or wp-cli addition
+if [ "$1" == "--dir" ]; then
+    echo ""
+    echo "Would you like any additional tools for this project?:" && echo ""
+    echo "       ( 0 ) none"
+    echo "       ( 1 ) drush            (drupal)"
+    echo "       ( 2 ) wp-cli           (wordpress)"
+    echo ""
+    echo -n "Numbered Choice: "
+    read tool_select_option && echo ""
+fi
+
 
 # make all the things for the new project, using the name provided
 project_path=/etc/robot/projects/custom/$project_name
@@ -65,6 +116,25 @@ mkdir -p $project_path
 # create project from template
 case $template_select_option in
 
+
+    #####################
+    # empty 2 container #
+    #####################
+    0 )
+        # copy everything from templates
+        cp -rf /etc/robot/template/robot-system/empty-2-container/* $project_path/
+        # check user php selection
+        case $php_select_option in
+            1 )
+                # php5.6
+                cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+                ;;
+            2 )
+                # php7.0
+                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                ;;
+            esac
+        ;;
 
     ###############
     # drupal 7.54 #
@@ -143,11 +213,38 @@ sed -i -e "s/template/${project_name}/g" \
 mv $project_path/apache2/template.apache2.ports.conf $project_path/apache2/$project_name.apache2.ports.conf
 mv $project_path/apache2/template.apache2.vhost.conf $project_path/apache2/$project_name.apache2.vhost.conf
 # install per project type
-if [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
+if [ $template_select_option == 0 ]; then
+    mv $project_path/empty.install.sh $project_path/$project_name.install.sh
+elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
     mv $project_path/drupal.install.sh $project_path/$project_name.install.sh
 elif [ $template_select_option == 3 ]; then
     mv $project_path/wordpress.install.sh $project_path/$project_name.install.sh
 fi
+
+# set custom file location
+if [ "$1" == "--dir" ]; then
+    # use db dump file in build
+    if [ "$use_db_dump" == "y" ]; then
+        db_file_full_path=${db_file_path/\~/$HOME}
+        cp "${db_file_full_path}" $project_path/mysql/${project_name}.sql
+        sed -i -e "s@#remove me#@@g" $project_path/$project_name.install.sh
+    fi
+    # add extra tools
+    if [ "$tool_select_option" == "1" ]; then
+        sed -i -e "s@#remove me drush#@@g" $project_path/$project_name.install.sh
+    elif [ "$tool_select_option" == "2" ]; then
+        sed -i -e "s@#remove me wp#@@g" $project_path/$project_name.install.sh
+    fi
+    # do the rest of the replacements
+    sed -i -e "s@~/robot.dev@$remove@g" \
+        $project_path/docker-compose.yml \
+        $project_path/apache2/Dockerfile \
+        $project_path/osx-docker-compose.yml \
+        $project_path/apache2/$project_name.apache2.ports.conf \
+        $project_path/apache2/$project_name.apache2.vhost.conf \
+        $project_path/docker-sync/docker-sync.yml
+fi
+
 # find next available apache2 port
 for ((i=81;i<=181;i++)); do
     if [ `cat /etc/robot/projects/*/*/apache2/*.apache2.ports.conf | grep Listen | tr -d 'Listen ' | grep -c $i` == "0" ]; then

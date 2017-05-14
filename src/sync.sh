@@ -10,28 +10,41 @@
 # include help functions
 . /etc/robot/src/help.functions.sh
 
-# based on navigation
-subproject=`echo $(pwd | sed 's/.*robot.dev\///' | cut -f1 -d"/")`
+# find project
+project_list=(`ls -p /etc/robot/projects/* | grep / | grep -v : | tr -d '/' | tr '\n' ' '`)
+for i in "${project_list[@]}"
+do
+    if [ `pwd | grep -c "/${i}"` == "1" ]; then
+        # this is how it looks for multiple web head projects
+        if [ `pwd | grep -coE "${i}[^/]+"` == "0" ]; then
+            subproject=`pwd | grep -oE "${i}"`
+        else
+            subproject=`pwd | grep -oE "${i}[^/]+"`
+        fi
+    fi
+done
 
-# !!!! TO DO : DOCUMENT THIS SOMEWHERE !!!!!
 # remove any sub-project stuff
 project=`echo $subproject | cut -f1 -d"_"`
 
 # probably need this for most things
 project_folder=`ls -d /etc/robot/projects/*/* | grep "${project}*" | sed 's/.*projects\///' | sed "s/\/.*//"`
 
+# determine project root
+project_base=`pwd | grep -o ".*${subproject}" | sed "s@$subproject@@g"`
+
 # arguments to 'robot sync'
 case $2 in
 
     # force a 1 time sync from local -> container for your location
     up )
-        docker cp ~/robot.dev/"${subproject}" "${subproject}"_web_1:/
+        docker cp "${project_base}${subproject}" "${subproject}"_web_1:/
         docker exec "${subproject}"_web_1 bash -c "chown -R robot:robot /${subproject}"
         ;;
 
     # force a 1 time sync from container -> local for your location
     back )
-        docker cp "${subproject}"_web_1:/"${subproject}" ~/robot.dev/
+        docker cp "${subproject}"_web_1:/"${subproject}" "${project_base}"
         ;;
 
     # restart the auto sync for your location
@@ -84,20 +97,24 @@ case $2 in
     # manually checks if a new file will sync
     test )
         # create a file
-        touch ~/robot.dev/$subproject/sync-test-file.txt
+        touch "${project_base}${subproject}"/sync-test-file.txt
         # wait
         echo "" && echo "Checking sync now. One moment." && echo ""
         sleep 10
         # see if file exists
-        if [ `docker exec "${subproject}"_web_1 bash -c "cd /$subproject && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
+        if [ `docker exec "${subproject}"_web_1 bash -c "cd /${subproject} && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
             echo "The test sync was: SUCCESSFUL." && echo ""
-            rm ~/robot.dev/$subproject/sync-test-file.txt
+            rm "${project_base}${subproject}"/sync-test-file.txt
             echo "I have removed the test file for you." && echo ""
         else
-            rm ~/robot.dev/$subproject/sync-test-file.txt
+            rm "${project_base}${subproject}"/sync-test-file.txt
             echo "The test sync: FAILED." && echo ""
             echo "Running 'robot sync status' can look for issues and attempt to fix them now." && echo ""
             echo "Maybe try that." && echo ""
+        fi
+        # in case container file is not removed (happens sometimes, not sure why)
+        if [ `docker exec "${subproject}"_web_1 bash -c "cd /${subproject} && ls | grep -c 'sync-test-file.txt'"` == "1" ]; then
+            docker exec "${subproject}"_web_1 bash -c "rm /${subproject}/sync-test-file.txt"
         fi
         ;;
 

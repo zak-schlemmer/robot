@@ -75,6 +75,7 @@ e: admin@robot.com
 ```
 robot create
 robot create <project_name>
+robot create --dir /path/to/arbitrary/directory/
 ```
 
 **list availble projects**
