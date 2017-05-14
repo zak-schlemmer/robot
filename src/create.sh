@@ -237,11 +237,12 @@ if [ "$1" == "--dir" ]; then
     fi
     # do the rest of the replacements
     sed -i -e "s@~/robot.dev@$remove@g" \
+        $project_path/docker-compose.yml \
         $project_path/apache2/Dockerfile \
-        $project_path/docker-sync/docker-sync.yml \
         $project_path/osx-docker-compose.yml \
         $project_path/apache2/$project_name.apache2.ports.conf \
-        $project_path/apache2/$project_name.apache2.vhost.conf
+        $project_path/apache2/$project_name.apache2.vhost.conf \
+        $project_path/docker-sync/docker-sync.yml
 fi
 
 # find next available apache2 port
