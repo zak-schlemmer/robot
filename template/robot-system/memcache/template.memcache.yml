@@ -1,0 +1,14 @@
+
+  # memcache
+  template-memcache:
+    hostname: template-memcache
+    container_name: template_memcache_1
+    image: template/memcache
+    build:
+      context: /etc/robot/
+      dockerfile: "./projects/custom/template/memcache/Dockerfile"
+    restart: always
+    command: 'memcached -m 1024 -u nobody -l 172.72.72.555 -p 11111'
+    networks:
+      net:
+        ipv4_address: 172.72.72.555
