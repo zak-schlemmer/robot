@@ -14,6 +14,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
   php5 \
   libapache2-mod-php5 \
   mysql-client \
+  php5-memcached \
   php5-mysqlnd \
   php5-gd \
   php5-curl \

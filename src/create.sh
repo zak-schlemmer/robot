@@ -296,7 +296,10 @@ case $template_select_option in
         done
         # set port
         sed -i -e "s/11111/${memcache_port}/g" $project_path/docker-compose.yml \
-            $project_path/osx-docker-compose.yml
+            $project_path/osx-docker-compose.yml \
+            $project_path/memcache/template.drupal7.settings.php
+        # enable for build
+        sed -i -e "s@#remove me memcache#@@g" $project_path/$project_name.install.sh
         ;;
 esac
 # set ip
@@ -307,7 +310,9 @@ sed -i -e "s/444/${apache2_next_ip}/g" $project_path/docker-compose.yml $project
 case $template_select_option in
     4|5|6|7 )
         memcache_next_ip=$((apache2_next_ip+1))
-        sed -i -e "s/555/${memcache_next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
+        sed -i -e "s/555/${memcache_next_ip}/g" $project_path/docker-compose.yml \
+            $project_path/osx-docker-compose.yml \
+            $project_path/memcache/template.drupal7.settings.php
         ;;
 esac
 # update local /etc/hosts

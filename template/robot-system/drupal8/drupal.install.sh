@@ -59,7 +59,7 @@ docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site
 docker exec -t $1_web_1 bash -c "cd /$1 && drush cr"
 
 # fix permissions
-docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php"
+docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php settings.php"
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
 
 # everything done
