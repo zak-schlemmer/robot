@@ -14,7 +14,7 @@ OS=`uname -s`
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
 # git clone
-git clone --branch 8.3.1 https://git.drupal.org/project/drupal.git ~/robot.dev/$1
+git clone --branch 8.3.2 https://git.drupal.org/project/drupal.git ~/robot.dev/$1
 
 # composer install
 echo "" && echo "Composer - $1"
