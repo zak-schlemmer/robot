@@ -64,6 +64,15 @@ function pwd_robot_project
     echo `pwd | grep -c "robot.dev/"`
 }
 
+# quick sync check and warning for osx
+function osx_sync_check
+{
+    if [ `uname -s` == "Darwin" ] && [ ! -f ~/robot.dev/docker-sync/`determine_project`/daemon.pid ]; then
+        echo "" && echo "!!!WARNING!!! - SYNC FOR THIS PROJECT IS STOPPED!!!" && echo ""
+    fi
+}
+
+
 
 #-------------------------#
 #   MAIN CASE STATEMENT   #
@@ -257,6 +266,7 @@ if [ "$1" != "" ]; then
             ;;
 
         drush )
+            osx_sync_check
             # check pwd
             #if [ `pwd_robot_project` == "0" ]; then
             #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot drush' command."
@@ -287,6 +297,7 @@ if [ "$1" != "" ]; then
             ;;
 
         wp )
+            osx_sync_check
             # check pwd
             #if [ `pwd_robot_project` == "0" ]; then
             #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to run a 'robot wp' command."
@@ -318,6 +329,7 @@ if [ "$1" != "" ]; then
 
         ssh )
             if [ "$2" == "" ]; then
+                osx_sync_check
                 # check pwd
                 #if [ `pwd_robot_project` == "0" ]; then
                 #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ssh' WITHOUT specifying a container name."
@@ -340,6 +352,7 @@ if [ "$1" != "" ]; then
 
         status )
             if [ "$2" == "" ]; then
+                osx_sync_check
                 # check pwd
                 #if [ `pwd_robot_project` == "0" ]; then
                 #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot status'."
@@ -401,6 +414,7 @@ if [ "$1" != "" ]; then
             ;;
 
         db )
+            osx_sync_check
             # check pwd
             #if [ `pwd_robot_project` == "0" ]; then
             #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot db' commands."
@@ -467,6 +481,7 @@ if [ "$1" != "" ]; then
 
 
         ngrok )
+            osx_sync_check
             # check pwd
             #if [ `pwd_robot_project` == "0" ]; then
             #    echo "" && echo "You need to be navigated to a project within ~/robot.dev/ to use 'robot ngrok'."
