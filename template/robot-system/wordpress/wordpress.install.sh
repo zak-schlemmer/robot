@@ -48,5 +48,11 @@ docker exec -t $1_web_1 bash -c "cd /$1 && wp --allow-root core install --url=${
 # fix permissions
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
 
+# optional memcache bits
+#remove me memcache#docker exec -t $1_web_1 bash -c "cd /$1 && wp plugin install w3-total-cache && wp plugin activate w3-total-cache"
+
+#remove me memcache#cat /etc/robot/projects/custom/$1/memcache/template.drupal7.settings.php >> ~/robot.dev/${1}/sites/default/settings.php
+#remove me memcache#docker exec -t $1_web_1 bash -c "cd /$1 && drush en -y memcache_admin"
+
 # everything done
 echo "" && echo "$1 - Finished" && echo ""
