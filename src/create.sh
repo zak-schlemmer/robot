@@ -63,18 +63,20 @@ else
     # some sort of option of the template to use
     echo ""
     echo "Please pick a base template to use:" && echo ""
-    echo "       ( 0 ) Empty                 2 container (web/db)"
-    echo "       ( 1 ) drupal 7.54           2 container (web/db)"
-    echo "       ( 2 ) drupal 8.3.1          2 container (web/db)"
-    echo "       ( 3 ) wordpress             2 container (web/db)"
-    echo "       ( 4 ) Empty                 3 container (web/db/memcache)"
-    echo "       ( 5 ) drupal 7.54           3 container (web/db/memcache)"
-    echo "       ( 6 ) drupal 8.3.1          3 container (web/db/memcache)"
-    echo "       ( 7 ) wordpress             3 container (web/db/memcache)"
+    echo "       ( 0 ) Empty"
+    echo "       ( 1 ) drupal 7.54"
+    echo "       ( 2 ) drupal 8.3.1"
+    echo "       ( 3 ) wordpress"
     echo ""
     echo -n "Numbered Choice: "
     read template_select_option && echo ""
 fi
+
+# memcache option
+echo ""
+echo "Would you like to create and integrate a memcache container into this project?"
+echo -n "Enter 'y' or 'n': "
+read memcache_select_option && echo ""
 
 # select php 5.6 or 7
 echo ""
@@ -124,7 +126,7 @@ case $template_select_option in
     #####################
     # empty 2 container #
     #####################
-    0|4 )
+    0 )
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/empty-2-container/* $project_path/
         # check user php selection
@@ -143,7 +145,7 @@ case $template_select_option in
     ###############
     # drupal 7.54 #
     ###############
-    1|5 )
+    1 )
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/drupal7/* $project_path/
         # check user php selection
@@ -162,7 +164,7 @@ case $template_select_option in
     ################
     # drupal 8.2.7 #
     ################
-    2|6 )
+    2 )
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/drupal8/* $project_path/
         # check user php selection
@@ -182,7 +184,7 @@ case $template_select_option in
     #############
     # wordpress #
     #############
-    3|7 )
+    3 )
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/wordpress/* $project_path/
         # check user php selection
@@ -201,13 +203,11 @@ case $template_select_option in
     esac
 
 # add memcache container
-case $template_select_option in
-    4|5|6|7 )
-        cp -rf /etc/robot/template/robot-system/memcache $project_path/memcache
-        cat $project_path/memcache/template.memcache.yml >> $project_path/docker-compose.yml
-        cat $project_path/memcache/template.memcache.yml >> $project_path/osx-docker-compose.yml
-        ;;
-esac
+if [ $memcache_select_option == "y" ]; then
+    cp -rf /etc/robot/template/robot-system/memcache $project_path/memcache
+    cat $project_path/memcache/template.memcache.yml >> $project_path/docker-compose.yml
+    cat $project_path/memcache/template.memcache.yml >> $project_path/osx-docker-compose.yml
+fi
 # do everything else not option specific
 cp -rf /etc/robot/template/robot-system/mysql $project_path/
 cp -rf /etc/robot/template/robot-system/docker-sync $project_path/
@@ -223,11 +223,11 @@ sed -i -e "s/template/${project_name}/g" \
 mv $project_path/apache2/template.apache2.ports.conf $project_path/apache2/$project_name.apache2.ports.conf
 mv $project_path/apache2/template.apache2.vhost.conf $project_path/apache2/$project_name.apache2.vhost.conf
 # install per project type
-if [ $template_select_option == 0 ] || [ $template_select_option == 4 ]; then
+if [ $template_select_option == 0 ]; then
     mv $project_path/empty.install.sh $project_path/$project_name.install.sh
-elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ] || [ $template_select_option == 5 ] || [ $template_select_option == 6 ]; then
+elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
     mv $project_path/drupal.install.sh $project_path/$project_name.install.sh
-elif [ $template_select_option == 3 ] || [ $template_select_option == 7 ]; then
+elif [ $template_select_option == 3 ]; then
     mv $project_path/wordpress.install.sh $project_path/$project_name.install.sh
 fi
 
@@ -285,38 +285,34 @@ sed -i -e "s/9999/${mysql_port}/g" $project_path/mysql/default.my.cnf \
     $project_path/docker-compose.yml \
     $project_path/osx-docker-compose.yml
 # for w/ memcache port
-case $template_select_option in
-    4|5|6|7 )
-        # get next available port
-        for ((i=11112;i<=11212;i++)); do
-            if [ `cat /etc/robot/projects/*/*/docker-compose.yml | grep "\-p 11" | grep -c $i` == "0" ]; then
-                memcache_port=$i
-                break
-            fi
-        done
-        # set port
-        sed -i -e "s/11111/${memcache_port}/g" $project_path/docker-compose.yml \
-            $project_path/osx-docker-compose.yml \
-            $project_path/memcache/template.drupal7.settings.php \
-            $project_path/memcache/template.drupal8.settings.php
-        # enable for build
-        sed -i -e "s@#remove me memcache#@@g" $project_path/$project_name.install.sh
-        ;;
-esac
+if [ $memcache_select_option == "y" ]; then
+    # get next available port
+    for ((i=11112;i<=11212;i++)); do
+        if [ `cat /etc/robot/projects/*/*/docker-compose.yml | grep "\-p 11" | grep -c $i` == "0" ]; then
+            memcache_port=$i
+            break
+        fi
+    done
+    # set port
+    sed -i -e "s/11111/${memcache_port}/g" $project_path/docker-compose.yml \
+        $project_path/osx-docker-compose.yml \
+        $project_path/memcache/template.drupal7.settings.php \
+        $project_path/memcache/template.drupal8.settings.php
+    # enable for build
+    sed -i -e "s@#remove me memcache#@@g" $project_path/$project_name.install.sh
+fi
 # set ip
 sed -i -e "s/333/${next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
 apache2_next_ip=$((next_ip+1))
 sed -i -e "s/444/${apache2_next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
 # for w/ memcache
-case $template_select_option in
-    4|5|6|7 )
+if [ $memcache_select_option == "y" ]; then
         memcache_next_ip=$((apache2_next_ip+1))
         sed -i -e "s/555/${memcache_next_ip}/g" $project_path/docker-compose.yml \
             $project_path/osx-docker-compose.yml \
             $project_path/memcache/template.drupal7.settings.php \
             $project_path/memcache/template.drupal8.settings.php
-        ;;
-esac
+fi
 # update local /etc/hosts
 export project_name=$project_name
 echo "I will update your local /etc/hosts file for you." && echo ""
