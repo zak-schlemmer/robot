@@ -25,6 +25,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
   php7.0-curl \
   php7.0-xml \
   php7.0-xdebug \
+  php7.0-mbstring \
   golang-go \
   git
 
