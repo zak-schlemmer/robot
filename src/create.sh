@@ -63,14 +63,20 @@ else
     # some sort of option of the template to use
     echo ""
     echo "Please pick a base template to use:" && echo ""
-    echo "       ( 0 ) Empty                 2 container (web/db)"
-    echo "       ( 1 ) drupal 7.54           2 container (web/db)"
-    echo "       ( 2 ) drupal 8.3.1          2 container (web/db)"
-    echo "       ( 3 ) wordpress             2 container (web/db)"
+    echo "       ( 0 ) Empty"
+    echo "       ( 1 ) drupal 7.54"
+    echo "       ( 2 ) drupal 8.3.1"
+    echo "       ( 3 ) wordpress"
     echo ""
     echo -n "Numbered Choice: "
     read template_select_option && echo ""
 fi
+
+# memcache option
+echo ""
+echo "Would you like to create and integrate a memcache container into this project?"
+echo -n "Enter 'y' or 'n': "
+read memcache_select_option && echo ""
 
 # select php 5.6 or 7
 echo ""
@@ -196,8 +202,12 @@ case $template_select_option in
 
     esac
 
-
-
+# add memcache container
+if [ $memcache_select_option == "y" ]; then
+    cp -rf /etc/robot/template/robot-system/memcache $project_path/memcache
+    cat $project_path/memcache/template.memcache.yml >> $project_path/docker-compose.yml
+    cat $project_path/memcache/template.memcache.yml >> $project_path/osx-docker-compose.yml
+fi
 # do everything else not option specific
 cp -rf /etc/robot/template/robot-system/mysql $project_path/
 cp -rf /etc/robot/template/robot-system/docker-sync $project_path/
@@ -274,10 +284,35 @@ sed -i -e "s/9999/${mysql_port}/g" $project_path/mysql/default.my.cnf \
     $project_path/$project_name.install.sh \
     $project_path/docker-compose.yml \
     $project_path/osx-docker-compose.yml
+# for w/ memcache port
+if [ $memcache_select_option == "y" ]; then
+    # get next available port
+    for ((i=11112;i<=11212;i++)); do
+        if [ `cat /etc/robot/projects/*/*/docker-compose.yml | grep "\-p 11" | grep -c $i` == "0" ]; then
+            memcache_port=$i
+            break
+        fi
+    done
+    # set port
+    sed -i -e "s/11111/${memcache_port}/g" $project_path/docker-compose.yml \
+        $project_path/osx-docker-compose.yml \
+        $project_path/memcache/template.drupal7.settings.php \
+        $project_path/memcache/template.drupal8.settings.php
+    # enable for build
+    sed -i -e "s@#remove me memcache#@@g" $project_path/$project_name.install.sh
+fi
 # set ip
 sed -i -e "s/333/${next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
 apache2_next_ip=$((next_ip+1))
 sed -i -e "s/444/${apache2_next_ip}/g" $project_path/docker-compose.yml $project_path/osx-docker-compose.yml
+# for w/ memcache
+if [ $memcache_select_option == "y" ]; then
+        memcache_next_ip=$((apache2_next_ip+1))
+        sed -i -e "s/555/${memcache_next_ip}/g" $project_path/docker-compose.yml \
+            $project_path/osx-docker-compose.yml \
+            $project_path/memcache/template.drupal7.settings.php \
+            $project_path/memcache/template.drupal8.settings.php
+fi
 # update local /etc/hosts
 export project_name=$project_name
 echo "I will update your local /etc/hosts file for you." && echo ""

@@ -19,6 +19,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y \
   php7.0 \
   libapache2-mod-php7.0 \
   mysql-client \
+  php7.0-memcached \
   php7.0-mysql \
   php7.0-gd \
   php7.0-curl \
