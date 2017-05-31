@@ -59,8 +59,12 @@ docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site
 docker exec -t $1_web_1 bash -c "cd /$1 && drush cr"
 
 # fix permissions
-docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php"
+docker exec -t $1_web_1 bash -c "cd /$1/sites/default && chmod 644 default.settings.php settings.php"
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
+
+# optional memcache bits
+#remove me memcache#docker exec -t $1_web_1 bash -c "cd /$1 && drush en -y memcache"
+#remove me memcache#cat /etc/robot/projects/custom/$1/memcache/template.drupal8.settings.php >> ~/robot.dev/${1}/sites/default/settings.php
 
 # everything done
 echo "" && echo "$1 - Finished" && echo ""

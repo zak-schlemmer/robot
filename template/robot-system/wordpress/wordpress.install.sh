@@ -48,5 +48,8 @@ docker exec -t $1_web_1 bash -c "cd /$1 && wp --allow-root core install --url=${
 # fix permissions
 docker exec -t $1_web_1 bash -c "chown -R robot:robot /$1"
 
+# optional memcache bits
+#remove me memcache#docker exec -u robot -t $1_web_1 bash -c "cd /$1 && wp plugin install w3-total-cache && wp plugin activate w3-total-cache"
+
 # everything done
 echo "" && echo "$1 - Finished" && echo ""
