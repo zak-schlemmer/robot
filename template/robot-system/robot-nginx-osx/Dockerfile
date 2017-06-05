@@ -1,5 +1,5 @@
 # use the latest nginx image
-FROM nginx:latest
+FROM nginx:1.11
 
 # apt-get what we need
 RUN apt update && apt install -y \
