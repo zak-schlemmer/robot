@@ -50,23 +50,23 @@ case $2 in
     # restart the auto sync for your location
     restart )
         cd /etc/robot/projects/$project_folder/$project/docker-sync/
-        docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}"
+        docker-sync stop --dir ~/robot.dev/docker-sync/"${subproject}"
         sleep 2
-        docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
+        docker-sync start --dir ~/robot.dev/docker-sync/"${subproject}"
         cd - > /dev/null 2>&1
         ;;
 
     # stop the auto sync for your location
     stop )
         cd /etc/robot/projects/$project_folder/$project/docker-sync/
-        docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}"
+        docker-sync stop --dir ~/robot.dev/docker-sync/"${subproject}"
         cd - > /dev/null 2>&1
         ;;
 
     # start the auto sync for your location
     start )
         cd /etc/robot/projects/$project_folder/$project/docker-sync/
-        docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
+        docker-sync start --dir ~/robot.dev/docker-sync/"${subproject}"
         cd - > /dev/null 2>&1
         ;;
 
@@ -77,10 +77,10 @@ case $2 in
             echo "" && echo "You sync container for this project seems messed up."
             echo "I'm going to go ahead and fix that for you."
             cd /etc/robot/projects/$project_folder/$project/docker-sync/
-            docker-sync-daemon stop --dir ~/robot.dev/docker-sync/"${subproject}" > /dev/null 2>&1
+            docker-sync stop --dir ~/robot.dev/docker-sync/"${subproject}" > /dev/null 2>&1
             docker-sync clean -c /etc/robot/projects/$project_folder/$project/docker-sync/docker-compose.yml > /dev/null 2>&1
             docker rm -f "${subproject}"-sync > /dev/null 2>&1
-            docker-sync-daemon start --dir ~/robot.dev/docker-sync/"${subproject}"
+            docker-sync start --dir ~/robot.dev/docker-sync/"${subproject}"
             cd - > /dev/null 2>&1
             echo "" && echo "docker-sync for this project should be fixed." && echo ""
         else

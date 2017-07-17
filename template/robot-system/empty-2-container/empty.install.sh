@@ -18,7 +18,7 @@ if [ "$OS" == "Darwin" ]; then
     # docker-sync
     echo "Getting docker-sync ready. Just a moment." && echo ""
     cd /etc/robot/projects/custom/$1/docker-sync/
-    docker-sync-daemon start --dir ~/robot.dev/docker-sync/$1
+    docker-sync start --dir ~/robot.dev/docker-sync/$1
     docker update --restart=always $1-sync
     cd - > /dev/null 2>&1
     # docker-compose build / up
