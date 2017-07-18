@@ -74,7 +74,7 @@ case $2 in
     status )
         # see if the sync container is running for the project
         if [ `docker ps | grep -i "${subproject}"-sync | grep -c -i "restart"` == "1" ]; then
-            echo "" && echo "You sync container for this project seems messed up."
+            echo "" && echo "Your sync container for this project seems messed up."
             echo "I'm going to go ahead and fix that for you."
             cd /etc/robot/projects/$project_folder/$project/docker-sync/
             docker-sync stop --dir ~/robot.dev/docker-sync/"${subproject}" > /dev/null 2>&1
