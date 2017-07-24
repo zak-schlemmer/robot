@@ -495,15 +495,24 @@ if [ "$1" != "" ]; then
         backup )
             case $2 in
                 create )
-                    datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
-                    temp_project=`determine_project`
-                    docker exec -t	"${temp_project}"_db_1 bash -c "mysqldump ${temp_project} > ${temp_project}.'${datestamp}'.sql"
-                    docker cp "${temp_project}"_db_1:/"${temp_project}"."${datestamp}".sql ./
-                    mkdir ~/robot.bak/ && cp -r ../${temp_project} ~/robot.bak/${temp_project}.${datestamp}
+                    if [ "$3" == "--all" ]; then
+                        datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
+                        for i in `ls ~/robot.dev/`
+                            do
+                                docker exec -t	"${i}"_db_1 bash -c "mysqldump ${i} > ${i}.'${datestamp}'.sql"
+                                docker cp "${i}"_db_1:/"${i}"."${datestamp}".sql ~/robot.dev/${i}/
+                                mkdir -p ~/robot.bak/ && cp -r ~/robot.dev/${i} ~/robot.bak/${i}.${datestamp}
+                        done
+                    else
+                        datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
+                        temp_project=`determine_project`
+                        docker exec -t	"${temp_project}"_db_1 bash -c "mysqldump ${temp_project} > ${temp_project}.'${datestamp}'.sql"
+                        docker cp "${temp_project}"_db_1:/"${temp_project}"."${datestamp}".sql ./
+                        mkdir -p ~/robot.bak/ && cp -r ~/robot.dev/${temp_project} ~/robot.bak/${temp_project}.${datestamp}
+                    fi
                     ;;
                 restore )
-
-
+                    # useless atm
                     ;;
                 # help things
                 -h | --help | help | "" )

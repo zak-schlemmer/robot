@@ -75,7 +75,7 @@ function backup_help
     echo "usage: robot backup COMMAND" && echo ""
     echo "Commands:"
     echo "    create            Create a backup of the project you are navigated to. (--all for everything)"
-    echo "    restore           Restore from a backup."
+    echo "    restore           Restore a project from a backup."
     echo "    help              Shows this help text."
     echo ""
 }
