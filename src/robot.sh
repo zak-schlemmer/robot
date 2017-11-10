@@ -492,6 +492,43 @@ if [ "$1" != "" ]; then
             exit
             ;;
 
+        backup )
+            case $2 in
+                create )
+                    if [ "$3" == "--all" ]; then
+                        datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
+                        for i in `ls ~/robot.dev/`
+                            do
+                                docker exec -t	"${i}"_db_1 bash -c "mysqldump ${i} > ${i}.'${datestamp}'.sql"
+                                docker cp "${i}"_db_1:/"${i}"."${datestamp}".sql ~/robot.dev/${i}/
+                                mkdir -p ~/robot.bak/ && cp -r ~/robot.dev/${i} ~/backup.robot/${i}.${datestamp}
+                        done
+                    else
+                        datestamp=`date +"%Y-%m-%d--%H-%M-%S"`
+                        temp_project=`determine_project`
+                        docker exec -t	"${temp_project}"_db_1 bash -c "mysqldump ${temp_project} > ${temp_project}.'${datestamp}'.sql"
+                        docker cp "${temp_project}"_db_1:/"${temp_project}"."${datestamp}".sql ./
+                        mkdir -p ~/robot.bak/ && cp -r ~/robot.dev/${temp_project} ~/backup.robot/${temp_project}.${datestamp}
+                    fi
+                    ;;
+                restore )
+                    # useless atm
+                    ;;
+                # help things
+                -h | --help | help | "" )
+                    backup_help
+                    exit
+                    ;;
+                # typo catch + help text
+                * )
+                    echo ""
+                    echo 'unrecognized command: robot' ${*}
+                    backup_help
+                    exit
+                    ;;
+                esac
+            ;;
+
         -h | --help | help )
             # same as no command, but good to do anyway
             usage
