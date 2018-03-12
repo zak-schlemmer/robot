@@ -89,6 +89,10 @@ if [ "$1" != "" ]; then
             . /etc/robot/src/create.sh "${@:2}"
             ;;
 
+        # restart (just stop/start)
+        restart )
+            robot stop "${*:2}" && robot start "${*:2}"
+            ;;
 
         # this will build all arguments provided to it
         build )
