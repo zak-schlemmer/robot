@@ -64,8 +64,8 @@ else
     echo ""
     echo "Please pick a base template to use:" && echo ""
     echo "       ( 0 ) Empty"
-    echo "       ( 1 ) drupal 7.54"
-    echo "       ( 2 ) drupal 8.3.1"
+    echo "       ( 1 ) drupal 7"
+    echo "       ( 2 ) drupal 8"
     echo "       ( 3 ) wordpress"
     echo ""
     echo -n "Numbered Choice: "
@@ -143,7 +143,7 @@ case $template_select_option in
         ;;
 
     ###############
-    # drupal 7.54 #
+    # drupal 7.x #
     ###############
     1 )
         # copy everything from templates
@@ -162,7 +162,7 @@ case $template_select_option in
         ;;
 
     ################
-    # drupal 8.2.7 #
+    # drupal 8.x #
     ################
     2 )
         # copy everything from templates

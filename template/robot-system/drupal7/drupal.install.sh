@@ -14,7 +14,7 @@ OS=`uname -s`
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
 # git clone
-git clone --branch 7.54 https://git.drupal.org/project/drupal.git ~/robot.dev/$1
+git clone --branch 7.x https://git.drupal.org/project/drupal.git ~/robot.dev/$1
 
 # start auto sync and use osx-specific .yml file if using OSX
 if [ "$OS" == "Darwin" ]; then
