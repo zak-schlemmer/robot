@@ -83,6 +83,7 @@ echo ""
 echo "Please select the php version you would like to use:" && echo ""
 echo "       ( 1 ) 5.6"
 echo "       ( 2 ) 7.0"
+echo "       ( 3 ) 7.1"
 echo ""
 echo -n "Numbered Choice: "
 read php_select_option && echo ""
@@ -137,7 +138,11 @@ case $template_select_option in
                 ;;
             2 )
                 # php7.0
-                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                cp -rf /etc/robot/template/robot-system/apache2-php7.0 $project_path/apache2
+                ;;
+            3 )
+                # php7.1
+                cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
                 ;;
             esac
         ;;
@@ -156,7 +161,11 @@ case $template_select_option in
                 ;;
             2 )
                 # php7.0
-                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                cp -rf /etc/robot/template/robot-system/apache2-php7.0 $project_path/apache2
+                ;;
+            3 )
+                # php7.1
+                cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
                 ;;
             esac
         ;;
@@ -175,7 +184,11 @@ case $template_select_option in
                 ;;
             2 )
                 # php7.0
-                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                cp -rf /etc/robot/template/robot-system/apache2-php7.0 $project_path/apache2
+                ;;
+            3 )
+                # php7.1
+                cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
                 ;;
             esac
         ;;
@@ -195,7 +208,11 @@ case $template_select_option in
                 ;;
             2 )
                 # php7.0
-                cp -rf /etc/robot/template/robot-system/apache2-php7 $project_path/apache2
+                cp -rf /etc/robot/template/robot-system/apache2-php7.0 $project_path/apache2
+                ;;
+            3 )
+                # php7.1
+                cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
                 ;;
             esac
         ;;
