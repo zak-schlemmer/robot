@@ -18,7 +18,7 @@ git clone https://git.drupal.org/project/drupal.git ~/robot.dev/$1
 
 # composer install
 echo "" && echo "Composer - $1"
-cd ~/robot.dev/$1/ && composer -n install --prefer-dist
+cd ~/robot.dev/$1/ && composer require drush/drush && composer -n install --prefer-dist
 sleep 1
 
 # start auto sync and use osx-specific .yml file if using OSX
@@ -50,8 +50,7 @@ fi
 sleep 3
 
 # drush
-docker exec -t $1_web_1 bash -c "wget http://files.drush.org/drush.phar"
-docker exec -t $1_web_1 bash -c "chmod +x drush.phar && mv drush.phar /usr/local/bin/drush"
+docker exec -t $1_web_1 bash -c "ln -s /$1/vendor/drush/drush/drush /usr/local/bin"
 
 # drupal install
 echo "" && echo "Drupal Install" && echo ""
