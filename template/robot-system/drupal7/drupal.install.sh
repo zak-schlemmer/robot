@@ -13,8 +13,9 @@ OS=`uname -s`
 # tell the user what is happening
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
-# git clone
-git clone --branch 7.x https://git.drupal.org/project/drupal.git ~/robot.dev/$1
+# get drupal
+cd ~/robot.dev/ && wget https://ftp.drupal.org/files/projects/drupal-7.59.tar.gz
+mkdir $1 && tar -xzf drupal-7.59.tar.gz -C $1 --strip-components 1 && rm -rf drupal-7*
 
 # start auto sync and use osx-specific .yml file if using OSX
 if [ "$OS" == "Darwin" ]; then
@@ -35,8 +36,9 @@ fi
 sleep 8
 
 # drush
-docker exec -t $1_web_1 bash -c "wget http://files.drush.org/drush.phar"
-docker exec -t $1_web_1 bash -c "chmod +x drush.phar && mv drush.phar /usr/local/bin/drush"
+#docker exec -t $1_web_1 bash -c "wget http://files.drush.org/drush.phar"
+#docker exec -t $1_web_1 bash -c "chmod +x drush.phar && mv drush.phar /usr/local/bin/drush"
+docker exec -t $1_web_1 bash -c "apt install -y drush"
 
 # drupal install
 echo "" && echo "Drupal Install" && echo ""

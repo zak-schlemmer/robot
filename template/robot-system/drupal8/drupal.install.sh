@@ -13,8 +13,9 @@ OS=`uname -s`
 # tell the user what is happening
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
-# git clone
-git clone https://git.drupal.org/project/drupal.git ~/robot.dev/$1
+# get drupal
+cd ~/robot.dev/ && wget https://www.drupal.org/download-latest/tar.gz
+mkdir $1 && tar -xzf tar.gz -C $1 --strip-components 1 && rm -rf tar.gz*
 
 # composer install
 echo "" && echo "Composer - $1"
