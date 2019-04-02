@@ -210,7 +210,6 @@ I will eventually list all the features and explain the use of each one.
 A few key items involed:
 
 * xdebug
-* blackfire
 * ngrok
 
 I have integrated my organization's custom projects into this new open source version.

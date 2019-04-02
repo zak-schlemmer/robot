@@ -71,9 +71,9 @@ RUN sed -i -e 's#;sendmail_path =#sendmail_path = \"\/opt\/go\/bin\/mhsendmail -
     /etc/php5/cli/php.ini
 
 # blackfire
-RUN wget -O - https://packagecloud.io/gpg.key | apt-key add -
-RUN echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list
-RUN apt-get update && apt-get install blackfire-agent blackfire-php
+#RUN wget -O - https://packagecloud.io/gpg.key | apt-key add -
+#RUN echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list
+#RUN apt-get update && apt-get install blackfire-agent blackfire-php
 
 # enable modrewrite
 RUN a2enmod rewrite
