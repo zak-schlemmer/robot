@@ -66,7 +66,8 @@ else
     echo "       ( 0 ) Empty"
     echo "       ( 1 ) drupal 7"
     echo "       ( 2 ) drupal 8"
-    echo "       ( 3 ) wordpress"
+    echo "       ( 3 ) drupal 9"
+    echo "       ( 4 ) wordpress"
     echo ""
     echo -n "Numbered Choice: "
     read template_select_option && echo ""
@@ -84,6 +85,7 @@ echo "Please select the php version you would like to use:" && echo ""
 echo "       ( 1 ) 5.6"
 echo "       ( 2 ) 7.0"
 echo "       ( 3 ) 7.1"
+echo "       ( 4 ) 7.3"
 echo ""
 echo -n "Numbered Choice: "
 read php_select_option && echo ""
@@ -144,6 +146,10 @@ case $template_select_option in
                 # php7.1
                 cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
                 ;;
+            4 )
+                #php7.3
+                cp -rf /etc/robot/template/robot-system/apache2-php7.3 $project_path/apache2
+                ;;
             esac
         ;;
 
@@ -166,6 +172,10 @@ case $template_select_option in
             3 )
                 # php7.1
                 cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
+                ;;
+            4 )
+                #php7.3
+                cp -rf /etc/robot/template/robot-system/apache2-php7.3 $project_path/apache2
                 ;;
             esac
         ;;
@@ -190,6 +200,37 @@ case $template_select_option in
                 # php7.1
                 cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
                 ;;
+            4 )
+                #php7.3
+                cp -rf /etc/robot/template/robot-system/apache2-php7.3 $project_path/apache2
+                ;;
+            esac
+        ;;
+
+    ################
+    # drupal 9.x #
+    ################
+    3 )
+        # copy everything from templates
+        cp -rf /etc/robot/template/robot-system/drupal9/* $project_path/
+        # check user php selection
+        case $php_select_option in
+            1 )
+                # php5.6
+                cp -rf /etc/robot/template/robot-system/apache2 $project_path/
+                ;;
+            2 )
+                # php7.0
+                cp -rf /etc/robot/template/robot-system/apache2-php7.0 $project_path/apache2
+                ;;
+            3 )
+                # php7.1
+                cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
+                ;;
+            4 )
+                #php7.3
+                cp -rf /etc/robot/template/robot-system/apache2-php7.3 $project_path/apache2
+                ;;
             esac
         ;;
 
@@ -197,7 +238,7 @@ case $template_select_option in
     #############
     # wordpress #
     #############
-    3 )
+    4 )
         # copy everything from templates
         cp -rf /etc/robot/template/robot-system/wordpress/* $project_path/
         # check user php selection
@@ -213,6 +254,10 @@ case $template_select_option in
             3 )
                 # php7.1
                 cp -rf /etc/robot/template/robot-system/apache2-php7.1 $project_path/apache2
+                ;;
+            4 )
+                #php7.3
+                cp -rf /etc/robot/template/robot-system/apache2-php7.3 $project_path/apache2
                 ;;
             esac
         ;;
@@ -242,9 +287,9 @@ mv $project_path/apache2/template.apache2.vhost.conf $project_path/apache2/$proj
 # install per project type
 if [ $template_select_option == 0 ]; then
     mv $project_path/empty.install.sh $project_path/$project_name.install.sh
-elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ]; then
+elif [ $template_select_option == 1 ] || [ $template_select_option == 2 ] || [ $template_select_option == 3 ]; then
     mv $project_path/drupal.install.sh $project_path/$project_name.install.sh
-elif [ $template_select_option == 3 ]; then
+elif [ $template_select_option == 4 ]; then
     mv $project_path/wordpress.install.sh $project_path/$project_name.install.sh
 fi
 

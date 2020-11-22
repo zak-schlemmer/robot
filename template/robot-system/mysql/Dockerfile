@@ -1,5 +1,5 @@
 # image to use
-FROM mysql:5.5
+FROM mysql:5.7
 
 # better my.cnf
 COPY ./projects/custom/template/mysql/default.my.cnf /etc/mysql/my.cnf

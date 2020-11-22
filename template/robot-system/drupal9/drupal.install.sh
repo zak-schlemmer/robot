@@ -14,8 +14,8 @@ OS=`uname -s`
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
 # get drupal
-cd ~/robot.dev/ && wget https://ftp.drupal.org/files/projects/drupal-8.9.9.tar.gz
-mkdir $1 && tar -xzf drupal-8.9.9.tar.gz -C $1 --strip-components 1 && rm -rf drupal-8.9.9.tar.gz*
+cd ~/robot.dev/ && wget https://www.drupal.org/download-latest/tar.gz
+mkdir $1 && tar -xzf tar.gz -C $1 --strip-components 1 && rm -rf tar.gz*
 
 # composer install
 echo "" && echo "Composer - $1"
@@ -55,7 +55,7 @@ docker exec -t $1_web_1 bash -c "ln -s /$1/vendor/drush/drush/drush /usr/local/b
 
 # drupal install
 echo "" && echo "Drupal Install" && echo ""
-docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site-name=${1} --account-name=admin --account-pass=robot --account-mail=admin@robot.com --db-url=mysql://root:root@${1}-db:9999/${1}"
+docker exec -t $1_web_1 bash -c "cd /$1 && drush site-install -y standard --site-name=${1} --account-name=admin --account-pass=robot --account-mail=admin@robot.com --db-url=mysql://root:root@${1}-db:3306/${1}"
 docker exec -t $1_web_1 bash -c "cd /$1 && drush cr"
 
 # fix permissions

@@ -14,8 +14,8 @@ OS=`uname -s`
 echo "" && echo "" && echo -e "Building $1." && echo ""
 
 # get drupal
-cd ~/robot.dev/ && wget https://ftp.drupal.org/files/projects/drupal-7.59.tar.gz
-mkdir $1 && tar -xzf drupal-7.59.tar.gz -C $1 --strip-components 1 && rm -rf drupal-7*
+cd ~/robot.dev/ && wget https://ftp.drupal.org/files/projects/drupal-7.74.tar.gz
+mkdir $1 && tar -xzf drupal-7.74.tar.gz -C $1 --strip-components 1 && rm -rf drupal-7.74*
 
 # start auto sync and use osx-specific .yml file if using OSX
 if [ "$OS" == "Darwin" ]; then
