@@ -1,18 +1,13 @@
 # image to use
 FROM mysql:5.7
 
-# better my.cnf
-COPY ./projects/custom/template/mysql/default.my.cnf /etc/mysql/my.cnf
-
 # add .my.cnf
 COPY ./projects/custom/template/mysql/default.dot.my.cnf /root/.my.cnf
 
 # apt-get what we need
 RUN apt update && apt install -y \
-  telnet \
   vim \
   nano \
-  net-tools \
   wget
 
 # root .bashrc
